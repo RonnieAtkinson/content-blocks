@@ -895,15 +895,17 @@ export class FormConnect {
     // [1] Set the dragState field to false.
     //     Any blocks added in the future will set their draggable attribute from this field.
     // [2] Disable the drag toggle button
-    // [3] Remove the active class from the drag toggle button
-    // [4] For each content block in the content block live node list: 
+    // [3] Uncheck the drag toggle
+    // [4] Remove the active class from the drag toggle button
+    // [5] For each content block in the content block live node list: 
     //     # Set their draggable attribute to false.
     //
     disableDrag() {
         this.dragState = false; // [1]
         this.toggleDragEl.disabled = true; // [2]
-        this.toggleDragEl.classList.remove(this.getClassNameFor('button:toggleDrag:active')); // [3]
-        for (const contentBlock of this.contentBlocksLNL) { // [4]
+        this.toggleDragEl.checked = false; // [3]
+        this.toggleDragEl.classList.remove(this.getClassNameFor('button:toggleDrag:active')); // [4]
+        for (const contentBlock of this.contentBlocksLNL) { // [5]
             contentBlock.draggable = false;
         };
     };
@@ -1158,9 +1160,9 @@ export class FormConnect {
                 this.removeContentBlock(targetEl.parentElement);
                 break;
 
-            case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:toggleDrag')]): // [10]
-                this.handleDragToggle();
-                break;
+                // case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:toggleDrag')]): // [10]
+                //     this.handleDragToggle();
+                //     break;
         };
 
         return this;
@@ -1182,6 +1184,7 @@ export class FormConnect {
         this.contentBlocksParentEl.addEventListener('dragover', this.handleDragOver.bind(this));
         this.contentBlocksParentEl.addEventListener('dragleave', this.handleDragLeave.bind(this));
         this.contentBlocksParentEl.addEventListener('drop', this.handleDragDrop.bind(this));
+        this.toggleDragEl.addEventListener('change', this.handleDragToggle.bind(this));
 
         return this;
     };
