@@ -5,9 +5,9 @@
 //
 // Imports
 //
-import { DomClassUtils } from '../utils/DomClass';
-import { CheckValue } from '../utils/CheckValue';
-import { DomElement } from '../DomElement/DomElement';
+import DomClassUtils from '../utils/DomClass';
+import CheckValue from '../utils/CheckValue';
+import DomElement from '../DomElement/DomElement';
 
 //
 // Default classes
@@ -17,14 +17,20 @@ const defaultClasses = {
     'block:parent': 'content-blocks',
     'block:single': 'content-blocks__single',
     'form:control': 'form-control',
-    'button:wrapper': 'content-block-buttons',
+    'content:tab': 'content-tab',
+    'content:active': 'active',
+    'button:wrapper': 'content-blocks-buttons',
     'button:addBlock': 'bt-add-group',
     'button:removeBlock': 'bt-remove-group',
     'button:addDynamic': 'bt-add',
     'button:removeDynamic': 'bt-remove',
+    'button:tab': 'bt-tab',
+    'button:tab:active': 'active',
+    'button:tab:wrapper': 'tabbing-buttons',
     'button:toggleDrag': 'bt-toggle-draggable',
     'button:toggleDrag:active': 'active',
-    'drag:droppable': 'droppable'
+    'drag:droppable': 'droppable',
+    'drag:draggable': 'draggable'
 };
 
 //
@@ -33,7 +39,8 @@ const defaultClasses = {
 const defaultText = {
     'button:removeBlock': 'Remove',
     'button:addDynamic': 'Add',
-    'button:removeDynamic': 'Remove'
+    'button:removeDynamic': 'Remove',
+    'button:tab:default': 'Content'
 };
 
 //
@@ -44,35 +51,67 @@ const defaultOptions = {
 };
 
 //
+// Default form controls
+//
+const defaultFormControls = {
+    classes: {
+        tab: 'classes',
+        label: 'Classes',
+        dynamic: true,
+        attributes: {
+            data: {
+                el: 'input',
+                type: 'text',
+                name: 'class'
+            }
+        }
+    }
+};
+
+//
 // Default content blocks
 //
 const defaultContentBlocks = {
     intro: {
         display: 'Introduction',
+        tabs: {
+            content: { display: 'Content', active: true },
+            classes: { display: 'Classes' },
+        },
         formControls: {
             content: {
+                tab: 'content',
                 label: 'Content',
                 element: {
                     node: 'textarea',
                     attributes: {}
                 }
+            },
+            classes: {
+                ...defaultFormControls.classes
             }
         }
     },
     link: {
         display: 'Link',
+        tabs: {
+            content: { display: 'Content', active: true },
+            classes: { display: 'Classes' }
+        },
         variations: {
             internal: { display: 'Internal' },
             external: { display: 'External' }
         },
         formControls: {
             variation: {
+                tab: 'content',
                 label: 'variation',
                 element: {
                     node: 'select'
                 }
             },
             linkText: {
+                tab: 'content',
                 label: 'Link Text',
                 element: {
                     node: 'input',
@@ -83,6 +122,7 @@ const defaultContentBlocks = {
                 }
             },
             linkUrl: {
+                tab: 'content',
                 label: 'Link URL',
                 element: {
                     node: 'input',
@@ -90,23 +130,38 @@ const defaultContentBlocks = {
                         type: 'text'
                     }
                 }
+            },
+            classes: {
+                ...defaultFormControls.classes
             }
         }
     },
     paragraph: {
         display: 'Paragraph',
+        tabs: {
+            content: { display: 'Content', active: true },
+            classes: { display: 'Classes' },
+        },
         formControls: {
             content: {
+                tab: 'content',
                 label: 'Content',
                 element: {
                     node: 'textarea',
                     attributes: {}
                 }
+            },
+            classes: {
+                ...defaultFormControls.classes
             }
         }
     },
     heading: {
         display: 'Heading',
+        tabs: {
+            content: { display: 'Content', active: true },
+            classes: { display: 'Classes' },
+        },
         variations: {
             h2: { display: 'H2' },
             h3: { display: 'H3' },
@@ -116,6 +171,7 @@ const defaultContentBlocks = {
         },
         formControls: {
             variation: {
+                tab: 'content',
                 label: 'variation',
                 element: {
                     node: 'select',
@@ -123,6 +179,7 @@ const defaultContentBlocks = {
                 }
             },
             content: {
+                tab: 'content',
                 label: 'Content',
                 element: {
                     node: 'input',
@@ -130,11 +187,18 @@ const defaultContentBlocks = {
                         type: 'text'
                     }
                 }
+            },
+            classes: {
+                ...defaultFormControls.classes
             }
         }
     },
     infoBox: {
         display: 'Information Box',
+        tabs: {
+            content: { display: 'Content', active: true },
+            classes: { display: 'Classes' },
+        },
         variations: {
             positive: { display: 'Positive' },
             negative: { display: 'Negative' },
@@ -142,6 +206,7 @@ const defaultContentBlocks = {
         },
         formControls: {
             variation: {
+                tab: 'content',
                 label: 'variation',
                 element: {
                     node: 'select',
@@ -149,6 +214,7 @@ const defaultContentBlocks = {
                 }
             },
             title: {
+                tab: 'content',
                 label: 'Title',
                 element: {
                     node: 'input',
@@ -158,6 +224,7 @@ const defaultContentBlocks = {
                 }
             },
             paragraph: {
+                tab: 'content',
                 label: 'Paragraph',
                 dynamic: true,
                 attributes: {
@@ -166,17 +233,25 @@ const defaultContentBlocks = {
                         name: 'content'
                     }
                 }
+            },
+            classes: {
+                ...defaultFormControls.classes
             }
         }
     },
     code: {
         display: 'Code Block',
+        tabs: {
+            content: { display: 'Content', active: true },
+            classes: { display: 'Classes' },
+        },
         variations: {
             html: { display: 'HTML' },
             javascript: { display: 'Javascript' }
         },
         formControls: {
             variation: {
+                tab: 'content',
                 label: 'Language',
                 element: {
                     node: 'select',
@@ -184,11 +259,15 @@ const defaultContentBlocks = {
                 }
             },
             content: {
+                tab: 'content',
                 label: 'Content',
                 element: {
                     node: 'textarea',
                     attributes: {}
                 }
+            },
+            classes: {
+                ...defaultFormControls.classes
             }
         }
     }
@@ -212,7 +291,7 @@ const defaultContentBlocks = {
 // options is optional
 // new FormConnect(formEl, contentGroups, options);
 //
-export class FormConnect {
+export default class FormConnect {
 
     //
     // Class constructor
@@ -404,13 +483,13 @@ export class FormConnect {
     // @param {HTMLElement} targetEl
     //
     // @usage
-    // this.addDynamicButtons(targetEl);
+    // this.addDynamicButtonsTo(targetEl);
     //
     // [1] Create a new add button and append it to targetEl.
     // [2] Create a new remove button and append it to targetEl.
     //     New content block dynamic elements will always be zero so the remove button can be set to disabled.
     //
-    addDynamicButtons(targetEl) {
+    addDynamicButtonsTo(targetEl) {
         new DomElement('button') // [1]
             .addAttributes({
                 type: 'button',
@@ -575,6 +654,68 @@ export class FormConnect {
     };
 
     //
+    // Add tabbing buttons
+    //
+    // @todo comments
+    //
+    addTabButtons(tabs, targetEl) {
+        const { el: buttonWrapperEl } = new DomElement('div')
+            .addAttributes({
+                classList: [...this.getClassNamesFor('button:tab:wrapper')]
+            })
+            .appendTo(targetEl);
+
+        for (const contentTab in tabs) {
+            const { el: tabButtonEl } = new DomElement('button')
+                .addAttributes({
+                    type: 'button',
+                    textContent: (tabs[contentTab].display || this.options.text['button:tab:default']),
+                    classList: [
+                        ...this.getClassNamesFor('button:tab'),
+                        `${this.getClassNameFor('button:tab')}--${contentTab}`
+                    ],
+                    dataset: {
+                        target: (`${this.getClassNameFor('content:tab')}--${contentTab}`)
+                    }
+                })
+                .appendTo(buttonWrapperEl);
+
+            if (tabs[contentTab].active) {
+                tabButtonEl.disabled = true;
+                tabButtonEl.classList.add(this.getClassNameFor('button:tab:active'))
+            };
+        };
+    };
+
+    //
+    // Add tab containers
+    //
+    // @todo comments
+    //
+    addTabContainers(tabs, targetEl) {
+        const tabNodes = {};
+
+        for (const tabContainer in tabs) {
+            const { el: tabContainerEl } = new DomElement('div')
+                .addAttributes({
+                    classList: [
+                        ...this.getClassNamesFor('content:tab'),
+                        `${this.getClassNameFor('content:tab')}--${tabContainer}`,
+                    ]
+                })
+                .appendTo(targetEl);
+
+            if (tabs[tabContainer].active) {
+                tabContainerEl.classList.add(this.getClassNamesFor('content:active'));
+            };
+
+            tabNodes[tabContainer] = tabContainerEl;
+        };
+
+        return tabNodes;
+    };
+
+    //
     // Add content block form controls
     // Adds the form-controls for the content type
     // ie: <div class="form-control"></div>
@@ -630,10 +771,15 @@ export class FormConnect {
     //      # Create a new node for the variation.
     //      # Add it as a child to the parent variation node [8] & [10].
     //
-    addContentBlockFormControls(fieldsetEl, formControls, variations, index) {
+    addContentBlockFormControls(parentNodes, formControls, variations, index) {
         if (typeof formControls != 'object' || !Object.keys(formControls).length) throw new Error('No form controls were passed'); // [1]
 
         for (const formControl in formControls) { // [2]
+
+            const tabName = formControls[formControl].tab;
+            const parentEl = (Object.keys(parentNodes).length > 0) ? parentNodes[tabName] : parentNodes;
+
+            if (CheckValue.isNullUndefindedEmpty(parentEl)) throw new Error(`${formControls[formControl].label} has been assigned to a tab that hasn't been defined`);
 
             const hasNode = !!((formControls[formControl].element || {}).node); // [3]
             const hasVariations = formControl === 'variation' && !!(Object.keys(variations || {}).length) && hasNode; // [4]
@@ -642,16 +788,19 @@ export class FormConnect {
 
             const { el: formControlEl } = new DomElement(elType) // [7]
                 .addAttributes({
-                    classList: [...this.getClassNamesFor('form:control'), `${this.getClassNameFor('form:control')}--${formControl}`],
+                    classList: [
+                        ...this.getClassNamesFor('form:control'),
+                        `${this.getClassNameFor('form:control')}--${formControl}`
+                    ],
                     dataset: ((formControls[formControl].attributes || {}).data)
                 })
-                .appendTo(fieldsetEl);
+                .appendTo(parentEl);
 
             let thisNode; // [8]
 
             if (isDynamic) { // [9]
                 new DomElement('legend').addAttributes({ textContent: (formControls[formControl] || {}).label }).appendTo(formControlEl);
-                this.addDynamicButtons(formControlEl);
+                this.addDynamicButtonsTo(formControlEl);
                 continue;
 
             } else {
@@ -732,67 +881,61 @@ export class FormConnect {
     //
     addContentBlock(contentType) {
         if (!contentType) throw new Error('No content type provided for this block'); // [1]
-        const { display, formControls, variations } = (this.contentGroups[contentType] || {}); // [2]
+        const { display, formControls, variations, tabs } = (this.contentGroups[contentType] || {}); // [2]
         if (!display || !formControls) throw new Error(`Invalid options provided for the ${contentType} content block`); // [3]
         const index = this.contentBlocksLNL.length + 1; // [4]
 
+        const hasTabs = !!(tabs);
+
         // Fieldset wrapper
-        const { el: fieldsetEl } = new DomElement('fieldset') // [5]
+        const { el: blockSingleEl } = new DomElement('fieldset') // [5]
             .addAttributes({
-                draggable: this.dragState,
                 classList: [...this.getClassNamesFor('block:single'), `${this.getClassNameFor('block:single')}--${contentType}`],
                 dataset: {
                     id: index
                 }
             });
 
+        // Add conditional attributes
+        if (this.dragState) {
+            blockSingleEl.classList.add(...this.getClassNamesFor('drag:draggable'));
+            blockSingleEl.draggable = true;
+        };
+
+        // Block legend
         new DomElement('legend') // [6]
             .addAttributes({ textContent: display })
-            .appendTo(fieldsetEl);
+            .appendTo(blockSingleEl);
 
+        // Block remove button
         new DomElement('button') // [7]
             .addAttributes({
                 type: 'button',
                 textContent: this.options.text['button:removeBlock'],
-                classList: [...this.getClassNamesFor('button:removeBlock')]
+                classList: this.getClassNamesFor('button:removeBlock')
             })
-            .appendTo(fieldsetEl);
+            .appendTo(blockSingleEl);
 
-        // Type
-        const { el: typeEl } = new DomElement('div') // [8]
-            .addAttributes({
-                classList: [...this.getClassNamesFor('form:control'), `${this.getClassNameFor('form:control')}--type`]
-            })
-            .appendTo(fieldsetEl);
+        // Tab buttons
+        if (hasTabs) this.addTabButtons(tabs, blockSingleEl);
 
+        // Hidden content type
         new DomElement('input') // [9]
             .addAttributes({
                 type: 'hidden',
                 value: contentType,
                 name: this.generateName(index, 'type')
             })
-            .appendTo(typeEl);
+            .appendTo(blockSingleEl);
 
-        // Classes
-        const { el: classEl } = new DomElement('fieldset') // [10]
-            .addAttributes({
-                classList: [...this.getClassNamesFor('form:control'), `${this.getClassNameFor('form:control')}--class`],
-                dataset: {
-                    el: 'input',
-                    type: 'text',
-                    name: 'class'
-                }
-            })
-            .appendTo(fieldsetEl);
-
-        new DomElement('legend').addAttributes({ textContent: 'Classes' }).appendTo(classEl); // [11]
-        this.addDynamicButtons(classEl); // [12]
+        // Content tabs
+        const contentTabs = (hasTabs) ? this.addTabContainers(tabs, blockSingleEl) : blockSingleEl;
 
         // Form controls
-        this.addContentBlockFormControls(fieldsetEl, formControls, variations, index); // [13]
+        this.addContentBlockFormControls(contentTabs, formControls, variations, index); // [13]
 
         // Render to dom
-        this.contentBlocksParentEl.appendChild(fieldsetEl); // [14]
+        this.contentBlocksParentEl.appendChild(blockSingleEl); // [14]
 
         if (this.isDragAllowed()) this.toggleDragEl.disabled = false; // [15] extract this?
     };
@@ -905,6 +1048,7 @@ export class FormConnect {
         this.toggleDragEl.disabled = true; // [2]
         this.toggleDragEl.checked = false; // [3]
         this.toggleDragEl.classList.remove(this.getClassNameFor('button:toggleDrag:active')); // [4]
+        DomClassUtils.removeClassesFromNodeList(this.getClassNamesFor('drag:draggable'), this.contentBlocksLNL);
         for (const contentBlock of this.contentBlocksLNL) { // [5]
             contentBlock.draggable = false;
         };
@@ -921,6 +1065,7 @@ export class FormConnect {
     //
     // [1] If dragging is not allowed return.
     // [2] Toggle the active class on the drag toggle button
+    // 
     // [3] Set the drag state field
     //     # If the first node in the content blocks live node lists draggable attribute it true:
     //     - Set the drag state to false
@@ -933,6 +1078,7 @@ export class FormConnect {
     handleDragToggle(event) {
         if (!this.isDragAllowed()) return; // [1]
         this.toggleDragEl.classList.toggle(this.getClassNameFor('button:toggleDrag:active')); // [2]
+        DomClassUtils.toggleClassesOnNodeList(this.getClassNamesFor('drag:draggable'), this.contentBlocksLNL);
         this.dragState = this.contentBlocksLNL[0].draggable ? false : true; // [3]
         for (const contentBlock of this.contentBlocksLNL) { // [4]
             contentBlock.draggable = this.dragState;
@@ -967,7 +1113,7 @@ export class FormConnect {
         const targetEl = event.target.closest(`.${this.getClassNameFor('block:single')}`); // [1]
         if (!targetEl.draggable) return; // [2]
 
-        event.dataTransfer.setData('text/html', targetEl.dataset.id); // [3]
+        event.dataTransfer.setData('text/plain', targetEl.dataset.id); // [3]
         event.dataTransfer.effectAllowed = 'move'; // [4]
     };
 
@@ -1016,7 +1162,7 @@ export class FormConnect {
     handleDragEnter(event) {
         const targetEl = event.target.closest(`.${this.getClassNameFor('block:single')}`); // [1]
         if (!targetEl) return; // [2]
-        if (event.dataTransfer.types[0] === 'text/html') { // [3]
+        if (event.dataTransfer.types[0] === 'text/plain') { // [3]
             targetEl.classList.add(this.getClassNameFor('drag:droppable'));
             event.preventDefault(); // [5]
         };
@@ -1038,7 +1184,7 @@ export class FormConnect {
     //     - Such as touch events or pointer events
     //
     handleDragOver(event) {
-        if (event.dataTransfer.types[0] === 'text/html') { // [1]
+        if (event.dataTransfer.types[0] === 'text/plain') { // [1]
             event.preventDefault();
         };
     };
@@ -1090,13 +1236,40 @@ export class FormConnect {
     //
     handleDragDrop(event) {
         const targetEl = event.target.closest(`.${this.getClassNameFor('block:single')}`); // [1]
-        const data = event.dataTransfer.getData('text/html'); // [2]
+        const data = event.dataTransfer.getData('text/plain'); // [2]
         const newNode = document.querySelector(`[data-id='${data}']`); // [3]
 
         if (!targetEl || !targetEl.parentElement) return; // [4]
 
+        event.preventDefault();
+
         targetEl.parentElement.insertBefore(newNode, targetEl); // [5]
         targetEl.classList.remove(this.getClassNameFor('drag:droppable')); // [6]
+    };
+
+    //
+    // Switch to tab
+    //
+    // @todo comments
+    //
+    switchToTab(targetEl) {
+        const parentContentBlock = targetEl.closest(`.${this.getClassNameFor('block:single')}`);
+        const buttonWrapper = targetEl.parentElement;
+        const targetTab = targetEl.dataset.target;
+
+        // Update classes on the buttons
+        const allButtons = buttonWrapper.querySelectorAll('button')
+        for (const bt of allButtons) {
+            bt.classList.remove(...this.getClassNamesFor('button:tab:active'));
+            bt.disabled = false;
+        };
+
+        targetEl.classList.add(...this.getClassNamesFor('button:tab:active'));
+        targetEl.disabled = true;
+
+        // Update classes on the content tabs
+        DomClassUtils.removeClassFromChildren(parentContentBlock, this.getClassNameFor('content:tab'), this.getClassNameFor('content:active'));
+        parentContentBlock.querySelector(`.${targetTab}`).classList.add(this.getClassNameFor('content:active'));
     };
 
     //
@@ -1160,9 +1333,9 @@ export class FormConnect {
                 this.removeContentBlock(targetEl.parentElement);
                 break;
 
-                // case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:toggleDrag')]): // [10]
-                //     this.handleDragToggle();
-                //     break;
+            case DomClassUtils.targetHasClass(targetEl, [this.getClassNameFor('button:tab')]):
+                this.switchToTab(targetEl);
+                break;
         };
 
         return this;
