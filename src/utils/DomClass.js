@@ -6,7 +6,7 @@
 // Dom class utils class
 // Utility class
 //
-export class DomClassUtils {
+export default class DomClassUtils {
 
     //
     // Remove class from children
@@ -15,8 +15,8 @@ export class DomClassUtils {
     // Removes a class from a node list of child elements.
     //
     // @param {HTMLElement} targetEl - The target element.
-    // @param {string} childClass - The class name to get child elements by.
-    // @param {string} removeClass - The class name to remove from child elements.
+    // @param {String} childClass - The class name to get child elements by.
+    // @param {String} removeClass - The class name to remove from child elements.
     //
     // @throws
     // Will throw an error if targetEl, childClass, or removeClass are falsy.
@@ -41,10 +41,16 @@ export class DomClassUtils {
     static removeClassFromChildren(targetEl, childClass, removeClass) {
         if (!targetEl || !childClass) throw new Error('To remove classes from children a required parameter is missing'); // [1]
         const childLNL = targetEl.getElementsByClassName(childClass); // [2]
-        while (childLNL[0]) { // [3]
-            childLNL[0].classList.remove(removeClass || childClass); // [4]
-        };
+        // while (childLNL[0]) { // [3]
+        //     childLNL[0].classList.remove(removeClass || childClass); // [4]
+        // };
+
+        for (const childEl of childLNL) {
+            childEl.classList.remove(removeClass || childClass);
+        }
+
     };
+
 
     //
     // Target has class
@@ -53,7 +59,7 @@ export class DomClassUtils {
     // Finds a class in a classList
     //
     // @param {HTMLElement} targetEl - The target element.
-    // @param {string[]} classArr - An array of class names to check.
+    // @param {String[]} classArr - An array of class names to check.
     //
     // @throws
     // Will throw an error if targetEl or classArr are falsy.
@@ -78,6 +84,50 @@ export class DomClassUtils {
         if (!targetEl || !classArr) throw new Error('To check if a target has a class a required parameter is missing'); // [1]
         if (classArr.some(className => targetEl.classList.contains(className))) { // [2]
             return targetEl.classList; // [3]
+        };
+    };
+
+    //
+    // Toggle class on node list
+    // @static
+    //
+    // Toggles a class on each node in a node list
+    //
+    // @param {NodeList} nodeList
+    // @param {String[]} classNames
+    //
+    // @throws
+    // Will throw an error if nodeList or classNames is falsy
+    // 
+    // @usage
+    // DomClassUtils.toggleClassOnNodeList(nodeList, classNames)
+    //
+    static toggleClassesOnNodeList(classNames, nodeList) {
+        if (!nodeList || !classNames) throw new Error('To add a class to a node list a required paramater is missing');
+        for (const node of nodeList) {
+            classNames.map(className => node.classList.toggle(className));
+        };
+    };
+
+    //
+    // Remove class from node list
+    // @static
+    //
+    // Removes a class from each node in a node list
+    //
+    // @param {NodeList} nodeList
+    // @param {String[]} classNames
+    //
+    // @throws
+    // Will throw an error if nodeList or classNames is falsy
+    // 
+    // @usage
+    // DomClassUtils.removeClassFromNodeList(nodeList, classNames)
+    //
+    static removeClassesFromNodeList(classNames, nodeList) {
+        if (!nodeList || !classNames) throw new Error('To remove a class from a node list a required paramater is missing');
+        for (const node of nodeList) {
+            node.classList.remove(...classNames);
         };
     };
 };
