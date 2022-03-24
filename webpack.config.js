@@ -2,6 +2,7 @@ const path = require('path');
 const CleanPlugin = require('clean-webpack-plugin');
 
 module.exports = {
+    watch: true,
     mode: 'development',
     entry: {
         'main': './src/index.js'
@@ -9,7 +10,12 @@ module.exports = {
     output: {
         filename: 'content-blocks.js',
         path: path.resolve(__dirname, 'dist'),
-        // publicPath: '/public/js'
+        library: {
+            name: 'FormConnect',
+            type: 'umd',
+            umdNamedDefine: true,
+            export: 'FormConnect'
+        }
     },
     devtool: 'eval',
     module: {
