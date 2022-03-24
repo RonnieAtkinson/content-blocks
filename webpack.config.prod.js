@@ -9,6 +9,12 @@ module.exports = {
     output: {
         filename: 'content-blocks.js',
         path: path.resolve(__dirname, 'dist'),
+        library: {
+            name: 'FormConnect',
+            type: 'umd',
+            umdNamedDefine: true,
+            export: 'FormConnect'
+        }
         // environment: {
         //     arrowFunction: false
         // }
