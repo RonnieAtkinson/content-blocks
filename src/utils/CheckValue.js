@@ -6,7 +6,7 @@
 // Check value class
 // Utility class
 //
-export class CheckValue {
+export default class CheckValue {
 
     //
     // Is null undefined or empty
