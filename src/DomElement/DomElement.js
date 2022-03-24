@@ -3,9 +3,9 @@
 // ==========================================================================
 
 //
-// imports
+// Imports
 //
-import { CheckValue } from '../utils/CheckValue';
+import CheckValue from '../utils/CheckValue';
 
 //
 // DOM element class
@@ -44,7 +44,7 @@ import { CheckValue } from '../utils/CheckValue';
 // new DomElement('textarea').addAttributes({ name:'feedback', dataset:{ icon: 'multiline', language: 'html' }});
 // Output: <textarea name="feedback" data-icon="multiline" data-language"html"></textarea>
 //
-export class DomElement {
+export default class DomElement {
 
     //
     // Class constructor
