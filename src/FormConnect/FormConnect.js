@@ -1235,13 +1235,13 @@ export default class FormConnect {
     // [6] Remove the drag:droppable class from targetEl
     //
     handleDragDrop(event) {
+        event.preventDefault();
+
         const targetEl = event.target.closest(`.${this.getClassNameFor('block:single')}`); // [1]
         const data = event.dataTransfer.getData('text/plain'); // [2]
         const newNode = document.querySelector(`[data-id='${data}']`); // [3]
 
         if (!targetEl || !targetEl.parentElement) return; // [4]
-
-        event.preventDefault();
 
         targetEl.parentElement.insertBefore(newNode, targetEl); // [5]
         targetEl.classList.remove(this.getClassNameFor('drag:droppable')); // [6]
