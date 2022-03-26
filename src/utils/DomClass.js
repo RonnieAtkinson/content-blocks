@@ -33,22 +33,25 @@ export default class DomClassUtils {
     //
     // [1] If targetEl OR childClass are falsy throw an error.
     // [2] Store a live list of nodes with the childClass present in their class list.
-    // [3] While there is a node in the node list:
+    // [3] For each node in the node list:
     // [4] Remove the class from the node.
     //     # If removeClass is not provided it will remove the class that was searched for instead. See the examples.
-    //     # When a class is removed the live node list will be updated reducing the number of nodes until its empty.
     //
     static removeClassFromChildren(targetEl, childClass, removeClass) {
         if (!targetEl || !childClass) throw new Error('To remove classes from children a required parameter is missing'); // [1]
         const childLNL = targetEl.getElementsByClassName(childClass); // [2]
+
+        // for (let i = 0; i < childLNL.length; i++) { // [3]
+        //     childLNL[i].classList.remove(removeClass || childClass); // [4]
+        // };
+
         // while (childLNL[0]) { // [3]
         //     childLNL[0].classList.remove(removeClass || childClass); // [4]
         // };
 
-        for (const childEl of childLNL) {
-            childEl.classList.remove(removeClass || childClass);
+        for (const childEl of childLNL) { // [3]
+            childEl.classList.remove(removeClass || childClass); // [4]
         }
-
     };
 
 
