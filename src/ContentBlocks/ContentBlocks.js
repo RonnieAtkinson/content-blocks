@@ -292,7 +292,7 @@ const defaultContentBlocks = {
 // options is optional
 // new FormConnect(formEl, contentGroups, options);
 //
-export default class FormConnect {
+export default class ContentBlocks {
 
     //
     // Class constructor

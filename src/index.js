@@ -11,4 +11,4 @@
 //
 // Exports
 //
-export { default as FormConnect } from './FormConnect/FormConnect';
+export { default as ContentBlocks } from './ContentBlocks/ContentBlocks';
