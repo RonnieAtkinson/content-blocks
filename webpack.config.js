@@ -11,10 +11,10 @@ module.exports = {
         filename: 'content-blocks.js',
         path: path.resolve(__dirname, 'dist'),
         library: {
-            name: 'FormConnect',
+            name: 'ContentBlocks',
             type: 'umd',
             umdNamedDefine: true,
-            export: 'FormConnect'
+            export: 'ContentBlocks'
         }
     },
     devtool: 'eval',
