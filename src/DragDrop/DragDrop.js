@@ -6,20 +6,34 @@
 // Imports
 //
 import DomClassUtils from '../utils/DomClass';
+import DomDataUtils from '../utils/DomData';
+import OptionUtils from '../utils/Option';
+
+//
+// Default options
+//
+const defaultOptions = {
+    initialDragState: false,
+};
 
 //
 // Drag drop class
 //
 export default class DragDrop {
 
+    //
+    // Constructor
+    //
     constructor(parentEl, blocks, options = {}) {
-        this.contentBlocksLNL = blocks;
-        this.options = options;
-        this.dragState = this.options.initialDragState; // [14]
         this.contentBlocksParentEl = parentEl;
+        this.contentBlocksLNL = blocks;
+        this.options = {
+            ...defaultOptions,
+            ...options
+        };
 
+        this.dragState = this.options.initialDragState; // [14]
         this.toggleDragEl = this.contentBlocksParentEl.querySelector(`.${this.getClassNameFor('button:toggleDrag')}`); // [12]
-
         this.dragListeners();
     };
 
@@ -40,7 +54,8 @@ export default class DragDrop {
     // [1] Return this first item in this.getClassNamesFor.
     //
     getClassNameFor(name) {
-        return this.getClassNamesFor(name)[0]; // [1]
+        // return this.getClassNamesFor(name)[0]; // [1]
+        return OptionUtils.getClassNamesFor(name, this.options.classes)[0];
     };
 
     //
@@ -58,74 +73,9 @@ export default class DragDrop {
     // Returns ['content-blocks-wrapper']
     //
     // [1]
-    // [2]
-    // [3]
-    // [4]
     //
     getClassNamesFor(name) {
-        const classNames = this.options.classes[name]; // [1]
-
-        if (Array.isArray(classNames)) {
-            return classNames; // [2]
-
-        } else if (typeof classNames == 'string') {
-            return [classNames]; // [3]
-
-        } else {
-            return []; // [4]
-        };
-    };
-
-    //
-    // Update index in names
-    // Updates the index in the name attributes
-    //
-    // @param {HTMLElement} wrapperEl
-    // @param {number} newIndex
-    //
-    // @usage
-    // this.updateIndexInNames(wrapperEl, newIndex);
-    //
-    // @example
-    // this.updateIndexInNames(typeWrapperEl, 3);
-    // returns postContent[a3][type]
-    //
-    // @example
-    // this.updateIndexInNames(contentWrapperEl, 7);
-    // returns postContent[a7][content]
-    //
-    // [1] Get all the nodes with where the name starts with postContent
-    // [2] For each node found:
-    // [3] Replace the number in the string with the newIndex provided in the parameters
-    //
-    updateIndexInNames(wrapperEl, newIndex) {
-        const childElements = wrapperEl.querySelectorAll('[name^="postContent"]'); // [1]
-        for (const childEl of childElements) { // [2]
-            childEl.name = childEl.name.replace(/(\d+)+/g, (match, index) => index = newIndex); // [3]
-        };
-    };
-
-    //
-    // Update wrapper indexes
-    // Updates the data-id on content group fieldsets
-    // Updates the child postContent names
-    //
-    // @usage
-    // this.updateWrapperIndexes();
-    //
-    // [1] Start the index at 1
-    // [2] For each content block in the node list:
-    // [3] Set data-id to the index [1]
-    // [4] Call this.updatedIndexInNames() to update the index in child name attributes.
-    // [5] Increment the index by 1 each iteration.
-    //
-    updateWrapperIndexes() {
-        let newIndex = 1; // [1]
-        for (const contentBlock of this.contentBlocksLNL) { // [2]
-            contentBlock.dataset.id = newIndex; // [3]
-            this.updateIndexInNames(contentBlock, newIndex); // [4]
-            newIndex++; // [5]
-        };
+        return OptionUtils.getClassNamesFor(name, this.options.classes);
     };
 
     //
@@ -252,7 +202,7 @@ export default class DragDrop {
             DomClassUtils.removeClassFromChildren(this.contentBlocksParentEl, this.getClassNameFor('drag:droppable'));
         };
 
-        this.updateWrapperIndexes(); // [3]
+        DomDataUtils.updateWrapperIndexes(this.contentBlocksLNL); // [3]
     };
 
     //
