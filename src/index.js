@@ -6,9 +6,10 @@
 // @todo default options
 // @todo multiple contentBlock parents
 // @todo label for attribute
+// @todo event emitter for adding and removing blocks
 //
 
 //
 // Exports
 //
-export { default as ContentBlocks } from './ContentBlocks/ContentBlocks';
+export { default as FormConnect } from './FormConnect/FormConnect';
