@@ -1,5 +1,5 @@
 // ==========================================================================
-// CONTENT BLOCKS / CONTENTBLOCK / #CONTENTBLOCK
+// CONTENT BLOCKS / CONTENTBLOCK / #CONTENT BLOCK
 // ==========================================================================
 
 //
@@ -23,17 +23,14 @@ export default class ContentBlock {
     //
     // Constructor
     //
-    constructor(blockType, blockOptions, contentBlocksLNL, parentEl, options) {
-        this.blockType = blockType;
-        this.blockOptions = blockOptions;
+    constructor(contentBlocksLNL, parentEl, options, dragDrop) {
         this.contentBlocksLNL = contentBlocksLNL;
         this.contentBlocksParentEl = parentEl;
         this.options = {
             ...defaultOptions,
             ...options
         };
-
-        console.log(blockOptions);
+        this.dragDrop = dragDrop;
     };
 
     //
@@ -229,55 +226,55 @@ export default class ContentBlock {
     //      # Create a new node for the variation.
     //      # Add it as a child to the parent variation node [8] & [10].
     //
-    addContentBlockFormControls(parentNodes, formControls, variations, index) {
-        if (typeof formControls != 'object' || !Object.keys(formControls).length) throw new Error('No form controls were passed'); // [1]
+    addFormGroups(parentNodes, formGroups, variations, index) {
+        if (typeof formGroups != 'object' || !Object.keys(formGroups).length) throw new Error('No form controls were passed'); // [1]
 
-        for (const formControl in formControls) { // [2]
+        for (const formGroup in formGroups) { // [2]
 
-            const tabName = formControls[formControl].tab;
+            const tabName = formGroups[formGroup].tab;
             const parentEl = (Object.keys(parentNodes).length > 0) ? parentNodes[tabName] : parentNodes;
 
-            if (CheckValue.isNullUndefindedEmpty(parentEl)) throw new Error(`${formControls[formControl].label} has been assigned to a tab that hasn't been defined`);
+            if (CheckValue.isNullUndefindedEmpty(parentEl)) throw new Error(`${formGroups[formGroup].label} has been assigned to a tab that hasn't been defined`);
 
-            const hasNode = !!((formControls[formControl].element || {}).node); // [3]
-            const hasVariations = formControl === 'variation' && !!(Object.keys(variations || {}).length) && hasNode; // [4]
-            const isDynamic = !!((formControls[formControl] || {}).dynamic); // [5]
+            const hasNode = !!((formGroups[formGroup].element || {}).node); // [3]
+            const hasVariations = formGroup === 'variation' && !!(Object.keys(variations || {}).length) && hasNode; // [4]
+            const isDynamic = !!((formGroups[formGroup] || {}).dynamic); // [5]
             const elType = (isDynamic) ? 'fieldset' : 'div'; // [6]
 
-            const { el: formControlEl } = new DomElement(elType) // [7]
+            const { el: formGroupEl } = new DomElement(elType) // [7]
                 .addAttributes({
                     classList: [
-                        ...this.getClassNamesFor('form:control'),
-                        `${this.getClassNameFor('form:control')}--${formControl}`
+                        ...this.getClassNamesFor('form:group'),
+                        `${this.getClassNameFor('form:group')}--${formGroup}`
                     ],
-                    dataset: ((formControls[formControl].attributes || {}).data)
+                    dataset: ((formGroups[formGroup].attributes || {}).data)
                 })
                 .appendTo(parentEl);
 
             let thisNode; // [8]
 
             if (isDynamic) { // [9]
-                new DomElement('legend').addAttributes({ textContent: (formControls[formControl] || {}).label }).appendTo(formControlEl);
-                this.addDynamicButtonsTo(formControlEl);
+                new DomElement('legend').addAttributes({ textContent: (formGroups[formGroup] || {}).label }).appendTo(formGroupEl);
+                this.addDynamicButtonsTo(formGroupEl);
                 continue;
 
             } else {
                 new DomElement('label')
                     .addAttributes({
-                        textContent: ((formControls[formControl] || {}).label),
+                        textContent: ((formGroups[formGroup] || {}).label),
                         htmlFor: 'test' // @todo
                     })
-                    .appendTo(formControlEl);
+                    .appendTo(formGroupEl);
             };
 
             if (hasNode) { // [10]
-                ({ el: thisNode } = new DomElement(formControls[formControl].element.node)
+                ({ el: thisNode } = new DomElement(formGroups[formGroup].element.node)
                     .addAttributes({
-                        ...formControls[formControl].element.attributes || {},
-                        // name: this.generateName(index, formControl)
-                        name: DomNameUtils.generateName(index, formControl)
+                        ...formGroups[formGroup].element.attributes || {},
+                        name: DomNameUtils.generateName(index, formGroup),
+                        classList: [...this.getClassNamesFor('form:control')]
                     })
-                    .appendTo(formControlEl)
+                    .appendTo(formGroupEl)
                 );
             };
 
@@ -338,11 +335,10 @@ export default class ContentBlock {
     // [15] If drag is allowed enabled the drag button
     //      # Dragging is allowed when there is > 1 content block in the DOM
     //
-    // addContentBlock(dragState, isDragAllowed) {
-    addContentBlock(dragDrop) {
-        if (!this.blockType) throw new Error('No content type provided for this block'); // [1]
-        const { display, formControls, variations, tabs } = (this.blockOptions || {}); // [2]
-        if (!display || !formControls) throw new Error(`Invalid options provided for the ${this.blockType} content block`); // [3]
+    addContentBlock(blockType, blockOptions) {
+        if (!blockType) throw new Error('No content type provided for this block'); // [1]
+        const { display, formGroups, variations, tabs } = (blockOptions || {}); // [2]
+        if (!display || !formGroups) throw new Error(`Invalid options provided for the ${blockType} content block`); // [3]
         const index = this.contentBlocksLNL.length + 1; // [4]
 
         const hasTabs = !!(tabs);
@@ -350,14 +346,14 @@ export default class ContentBlock {
         // Fieldset wrapper
         const { el: blockSingleEl } = new DomElement('fieldset') // [5]
             .addAttributes({
-                classList: [...this.getClassNamesFor('block:single'), `${this.getClassNameFor('block:single')}--${this.blockType}`],
+                classList: [...this.getClassNamesFor('block:single'), `${this.getClassNameFor('block:single')}--${blockType}`],
                 dataset: {
                     id: index
                 }
             });
 
         // Add conditional attributes
-        if (dragDrop.dragState) {
+        if (this.dragDrop.dragState) {
             blockSingleEl.classList.add(...this.getClassNamesFor('drag:draggable'));
             blockSingleEl.draggable = true;
         };
@@ -383,7 +379,7 @@ export default class ContentBlock {
         new DomElement('input') // [9]
             .addAttributes({
                 type: 'hidden',
-                value: this.blockType,
+                value: blockType,
                 name: DomNameUtils.generateName(index, 'type')
             })
             .appendTo(blockSingleEl);
@@ -391,15 +387,15 @@ export default class ContentBlock {
         // Content tabs
         const contentTabs = (hasTabs) ? this.addTabContainers(tabs, blockSingleEl) : blockSingleEl;
 
-        // Form controls
-        this.addContentBlockFormControls(contentTabs, formControls, variations, index); // [13]
+        // Form groups
+        this.addFormGroups(contentTabs, formGroups, variations, index); // [13]
 
         // Render to dom
         this.contentBlocksParentEl.appendChild(blockSingleEl); // [14]
 
         // if (this.isDragAllowed()) this.toggleDragEl.disabled = false; 
         // if (this.dragDrop.isDragAllowed()) this.dragDrop.toggleDragEl.disabled = false; // [15] extract this?
-        if (dragDrop.isDragAllowed()) dragDrop.toggleDragEl.disabled = false; // [15] extract this?
+        if (this.dragDrop.isDragAllowed()) this.dragDrop.toggleDragEl.disabled = false; // [15] extract this?
     };
 
 };
