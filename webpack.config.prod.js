@@ -13,7 +13,7 @@ module.exports = {
             name: 'ContentBlocks',
             type: 'umd',
             umdNamedDefine: true,
-            export: 'ContentBlocks'
+            export: 'FormConnect'
         }
         // environment: {
         //     arrowFunction: false
