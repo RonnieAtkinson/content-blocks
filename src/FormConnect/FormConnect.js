@@ -143,8 +143,8 @@ export const defaultFormGroups = {
 //
 const defaultContentBlocks = {
     intro: {
-        icon: 'intro',
         display: 'Introduction',
+        icon: 'intro',
         tabs: {
             content: { display: 'Content', active: true },
             classes: { display: 'Classes' },
@@ -162,6 +162,7 @@ const defaultContentBlocks = {
     },
     link: {
         display: 'Link',
+        icon: 'link',
         tabs: {
             content: { display: 'Content', active: true },
             classes: { display: 'Classes' }
@@ -206,6 +207,7 @@ const defaultContentBlocks = {
     },
     paragraph: {
         display: 'Paragraph',
+        icon: 'paragraph',
         tabs: {
             content: { display: 'Content', active: true },
             classes: { display: 'Classes' },
@@ -223,6 +225,7 @@ const defaultContentBlocks = {
     },
     heading: {
         display: 'Heading',
+        icon: 'heading',
         tabs: {
             content: { display: 'Content', active: true },
             classes: { display: 'Classes' },
@@ -257,6 +260,7 @@ const defaultContentBlocks = {
     },
     infoBox: {
         display: 'Information Box',
+        icon: 'info',
         tabs: {
             content: { display: 'Content', active: true },
             classes: { display: 'Classes' },
@@ -301,6 +305,7 @@ const defaultContentBlocks = {
     },
     code: {
         display: 'Code Block',
+        icon: 'code',
         tabs: {
             content: { display: 'Content', active: true },
             classes: { display: 'Classes' },
