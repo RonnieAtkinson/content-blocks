@@ -150,6 +150,22 @@ export default class DomElement {
     };
 
     //
+    // Prepend to
+    // Prepends this.el to an HTMLElement as a child
+    //
+    // @param {HTMLElement} parentEl
+    // 
+    // @usage
+    // this.prependTo(parentEl)
+    //
+    // [1] Adds this.el to the start of the list of children of the parent node.
+    //
+    prependTo(parentEl) {
+        parentEl.prepend(this.el);
+        return this;
+    };
+
+    //
     // Insert before element
     // Inserts this.el before the target element
     //
