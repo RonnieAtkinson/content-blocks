@@ -337,7 +337,7 @@ export default class ContentBlock {
     //
     addContentBlock(blockType, blockOptions) {
         if (!blockType) throw new Error('No content type provided for this block'); // [1]
-        const { display, formGroups, variations, tabs } = (blockOptions || {}); // [2]
+        const { display, icon, formGroups, variations, tabs } = (blockOptions || {}); // [2]
         if (!display || !formGroups) throw new Error(`Invalid options provided for the ${blockType} content block`); // [3]
         const index = this.contentBlocksLNL.length + 1; // [4]
 
@@ -359,9 +359,20 @@ export default class ContentBlock {
         };
 
         // Block legend
-        new DomElement('legend') // [6]
+        const { el: legendEl } = new DomElement('legend') // [6]
             .addAttributes({ textContent: display })
             .appendTo(blockSingleEl);
+
+        if (icon) {
+            new DomElement('i')
+                .addAttributes({
+                    classList: [
+                        ...this.getClassNamesFor('block:icon'),
+                        `${this.getClassNameFor('block:icon')}--${icon}`
+                    ]
+                })
+                .prependTo(legendEl);
+        };
 
         // Block remove button
         new DomElement('button') // [7]
