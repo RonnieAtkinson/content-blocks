@@ -17,6 +17,29 @@ import OptionUtils from '../utils/Option';
 //
 // Default classes
 //
+// These are the default class names.
+// They can be overwritten when initilising a new instance of FormConnect using the options param.
+//
+// Multiple classes are supported by using an array:
+// {'block:wrapper' : ['classname1', 'classname2', 'etc']}
+//
+// Overwriting using the options param:
+// new FormConnect(formEl, {}, {
+//      classes: {
+//          'block:wrapper' : ['classname1', 'classname2', 'etc']
+//      }   
+// });
+//
+// They are retrieved using a helper:
+// getClassNamesFor('block:wrapper');
+// # If only one class name is defined it will be added to an array.
+// # Multiple classes added to an array are left untouched.
+// # Get all the class names in the array.
+//
+// getClassNameFor('block:wrapper');
+// # Calls getClassNamesFor();
+// # Get the first class name in the array.
+//
 const defaultClasses = {
     'block:wrapper': 'content-blocks-wrapper',
     'block:parent': 'content-blocks',
@@ -42,6 +65,16 @@ const defaultClasses = {
 //
 // Default text
 //
+// These are the defaults for text content
+// Can be overwritten when initilizing a new FormConnect instance using the options param
+//
+// Overwriting using the options param:
+// new FormConnect(formEl, {}, {
+//      text: {
+//          'button:removeBlock' : 'Delete'
+//      }
+// });
+//
 const defaultText = {
     'button:removeBlock': 'Remove',
     'button:addDynamic': 'Add',
@@ -52,12 +85,19 @@ const defaultText = {
 //
 // Default options
 //
+// These are the default options.
+// There was something here...
+// Leaving it for now.
+//
 const defaultOptions = {};
 
 //
-// Default form controls
+// Default form groups
 //
-const defaultFormGroups = {
+// This object holds the default formGroups
+// They're templates for form groups that are used multiple times in defaultContentBlocks
+//
+export const defaultFormGroups = {
     classes: {
         tab: 'classes',
         label: 'Classes',
@@ -70,11 +110,35 @@ const defaultFormGroups = {
                 placeholder: 'Class name'
             }
         }
+    },
+    inputTextarea: {
+        label: 'Content',
+        element: {
+            node: 'textarea'
+        }
+    },
+    inputText: {
+        label: 'Content',
+        element: {
+            node: 'input',
+            attributes: {
+                type: 'text'
+            }
+        }
+    },
+    inputSelect: {
+        label: 'Variation',
+        element: {
+            node: 'select'
+        }
     }
 };
 
 //
 // Default content blocks
+//
+// This object holds the default content blocks
+// 
 //
 const defaultContentBlocks = {
     intro: {
@@ -85,11 +149,9 @@ const defaultContentBlocks = {
         },
         formGroups: {
             content: {
-                tab: 'content',
-                label: 'Content',
-                element: {
-                    node: 'textarea'
-                }
+                ...defaultFormGroups.inputTextarea,
+                tab: 'content'
+
             },
             classes: {
                 ...defaultFormGroups.classes
@@ -108,30 +170,30 @@ const defaultContentBlocks = {
         },
         formGroups: {
             variation: {
-                tab: 'content',
-                label: 'variation',
-                element: {
-                    node: 'select'
-                }
+                ...defaultFormGroups.inputSelect,
+                tab: 'content'
             },
             linkText: {
+                ...defaultFormGroups.inputText,
                 tab: 'content',
                 label: 'Link Text',
                 element: {
-                    node: 'input',
+                    ...defaultFormGroups.inputText.element,
                     attributes: {
-                        type: 'text',
-                        placeholder: 'test'
+                        ...defaultFormGroups.inputText.element.attributes,
+                        placeholder: 'Link text label'
                     }
                 }
             },
             linkUrl: {
+                ...defaultFormGroups.inputText,
                 tab: 'content',
                 label: 'Link URL',
                 element: {
-                    node: 'input',
+                    ...defaultFormGroups.inputText.element,
                     attributes: {
-                        type: 'text'
+                        ...defaultFormGroups.inputText.element.attributes,
+                        placeholder: 'Link URL'
                     }
                 }
             },
@@ -148,12 +210,9 @@ const defaultContentBlocks = {
         },
         formGroups: {
             content: {
+                ...defaultFormGroups.inputTextarea,
                 tab: 'content',
-                label: 'Content',
-                element: {
-                    node: 'textarea',
-                    attributes: {}
-                }
+
             },
             classes: {
                 ...defaultFormGroups.classes
@@ -175,20 +234,17 @@ const defaultContentBlocks = {
         },
         formGroups: {
             variation: {
-                tab: 'content',
-                label: 'variation',
-                element: {
-                    node: 'select',
-                    attributes: {}
-                }
+                ...defaultFormGroups.inputSelect,
+                tab: 'content'
             },
             content: {
+                ...defaultFormGroups.inputText,
                 tab: 'content',
-                label: 'Content',
                 element: {
-                    node: 'input',
+                    ...defaultFormGroups.inputText.element,
                     attributes: {
-                        type: 'text'
+                        ...defaultFormGroups.inputText.element.attributes,
+                        placeholder: 'Heading text'
                     }
                 }
             },
@@ -210,20 +266,18 @@ const defaultContentBlocks = {
         },
         formGroups: {
             variation: {
+                ...defaultFormGroups.inputSelect,
                 tab: 'content',
-                label: 'variation',
-                element: {
-                    node: 'select',
-                    attributes: {}
-                }
             },
             title: {
+                ...defaultFormGroups.inputText,
                 tab: 'content',
                 label: 'Title',
                 element: {
-                    node: 'input',
+                    ...defaultFormGroups.inputText.element,
                     attributes: {
-                        type: 'text'
+                        ...defaultFormGroups.inputText.element.attributes,
+                        placeholder: 'Box title'
                     }
                 }
             },
@@ -255,20 +309,14 @@ const defaultContentBlocks = {
         },
         formGroups: {
             variation: {
+                ...defaultFormGroups.inputSelect,
                 tab: 'content',
-                label: 'Language',
-                element: {
-                    node: 'select',
-                    attributes: {}
-                }
+                label: 'Language'
             },
             content: {
-                tab: 'content',
-                label: 'Content',
-                element: {
-                    node: 'textarea',
-                    attributes: {}
-                }
+                ...defaultFormGroups.inputTextarea,
+                tab: 'content'
+
             },
             classes: {
                 ...defaultFormGroups.classes
@@ -295,7 +343,7 @@ const defaultContentBlocks = {
 // options is optional
 // new FormConnect(formEl, contentGroups, options);
 //
-export default class ContentBlocks {
+export default class FormConnect {
 
     //
     // Class constructor
@@ -400,8 +448,7 @@ export default class ContentBlocks {
     // [1] Return this first item in this.getClassNamesFor.
     //
     getClassNameFor(name) {
-        // return this.getClassNamesFor(name)[0]; // [1]
-        return OptionUtils.getClassNamesFor(name, this.options.classes)[0];
+        return OptionUtils.getClassNamesFor(name, this.options.classes)[0]; // [1]
     };
 
     //
