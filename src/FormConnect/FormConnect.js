@@ -44,6 +44,7 @@ const defaultClasses = {
     'block:wrapper': 'content-blocks-wrapper',
     'block:parent': 'content-blocks',
     'block:single': 'content-blocks__single',
+    'block:icon': 'icon',
     'form:group': 'form-group',
     'form:control': 'form-control',
     'content:tab': 'content-tab',
@@ -142,6 +143,7 @@ export const defaultFormGroups = {
 //
 const defaultContentBlocks = {
     intro: {
+        icon: 'intro',
         display: 'Introduction',
         tabs: {
             content: { display: 'Content', active: true },
@@ -631,14 +633,26 @@ export default class FormConnect {
     //
     addContentButtons() {
         for (const group in this.contentGroups) { // [1]
-            new DomElement('button')
+            const { icon, display } = this.contentGroups[group];
+            const { el: buttonEl } = new DomElement('button')
                 .addAttributes({ // [2]
                     type: 'button', // [3]
-                    textContent: this.contentGroups[group].display, // [4]
+                    textContent: display, // [4]
                     classList: [...this.getClassNamesFor('button:addBlock'), `${this.getClassNameFor('button:addBlock')}--${group}`], // [5]
                     dataset: { group } // [6]
                 })
                 .appendTo(this.contentBlocksButtonWrapperEl); // [7]
+
+            if (icon) {
+                new DomElement('i')
+                    .addAttributes({
+                        classList: [
+                            ...this.getClassNamesFor('block:icon'),
+                            `${this.getClassNameFor('block:icon')}--${icon}`
+                        ]
+                    })
+                    .prependTo(buttonEl);
+            };
         };
     };
 
