@@ -5,7 +5,9 @@
     "main": "src/index.js",
     "scripts": {
         "compilejs:dev": "webpack",
-        "compilejs:prod": "webpack --config webpack.config.prod.js"
+        "compilejs:prod": "webpack --config webpack.config.prod.js",
+        "compilecss:dev": "gulp compileSassDev",
+        "compilecss:prod": "gulp compileSass"
     },
     "keywords": [],
     "author": "",
