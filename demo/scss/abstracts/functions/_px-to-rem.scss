@@ -1,0 +1,17 @@
+// ==========================================================================
+// ABSTRACTS / FUNCTIONS / #PX TO REM
+// ==========================================================================
+
+// Converts a pixel value to rem
+//
+// @param {Number} $pixel-value Assign pixel size to convert
+// @example font-size: px-to-rem(pixel-value);
+//
+
+@function px-to-rem($pixel-value) {
+    @if unitless($pixel-value) {
+        $pixel-value: $pixel-value * 1px;
+    }
+
+    @return $pixel-value / $base-font-size * 1rem;
+}

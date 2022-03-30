@@ -1,0 +1,17 @@
+// ==========================================================================
+// ABSTRACTS / MIXINS / #ACTION BUTTON
+// ==========================================================================
+
+//
+// @example
+// @include actionButton();
+//
+@mixin actionButton() { 
+    font-family: $font-family-button;
+    font-weight: $font-weight-button;
+    font-size: px-to-rem(11px);
+    text-transform: uppercase;
+
+    padding: 8px 15px;
+    cursor: pointer;
+};

@@ -6,12 +6,73 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Content blocks demo 01</title>
+
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src=" ../dist/content-blocks.js" defer></script>
+        <script>
+            class AddContentBlocks {
+                static init() {
+                    const formEl = document.querySelector('form');
+                    const customBlocks = {
+                        list: {
+                            display: 'List',
+                            icon: 'list',
+                            // tabs: {
+                            //     content: { display: 'Content', active: true }
+                            // },
+                            formGroups: {
+                                content: {
+                                    // tab: 'content',
+                                    label: 'Check me',
+                                    element: {
+                                        node: 'input',
+                                        attributes: {
+                                            type: 'checkbox',
+                                            className: 'test'
+                                        }
+                                    }
+                                },
+                                // classes: {
+                                //     ...defaultFormControls.classes
+                                // }
+                            }
+                        }
+                    };
+
+                    new ContentBlocks(formEl, customBlocks);
+                };
+
+
+            };
+
+
+
+            document.addEventListener('DOMContentLoaded', AddContentBlocks.init);
+
+
+
+        </script>
     </head>
 
     <body>
-        <form>
+        <div class="width-container">
+            <form>
+                <div class="content-blocks-wrapper">
+                    <fieldset class="content-blocks">
 
-        </form>
+                        <label class="toggle-switch" for="checkbox-test">
+                            Reorder
+                            <input type="checkbox" class="bt-toggle-draggable" id="checkbox-test" autocomplete="off" disabled>
+                            <span></span>
+                        </label>
+
+                    </fieldset>
+
+                    <div class="content-blocks-buttons"></div>
+                </div>
+            </form>
+        </div>
     </body>
 
 </html>

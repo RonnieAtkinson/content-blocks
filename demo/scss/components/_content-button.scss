@@ -1,0 +1,44 @@
+.bt-add-group {
+    @include actionButton();
+
+    position: relative;
+    width: calc(16.6666% - 20px);
+    min-height: 90px;
+    margin: 10px 10px;
+    border: $border-width-thin solid #323335;
+    border-radius: $border-radius-default;
+
+    background: $color-dark-01;
+    color: #fff;
+    box-sizing: border-box;
+    vertical-align: top;
+    transition: all 0.15s;
+
+    &:after {
+        content: '+';
+        display: block;
+        text-align: center;
+        font-size: 18px;
+        line-height: 1;
+        color: $color-dark-01;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        height: 20px;
+        width: 20px;
+        // background: #323335;
+        background: rgba($color-bt-add-light, 0.3);
+        border-radius: 15px;
+    };
+
+    &:hover {
+        border-color: $color-bt-add-light;
+        color: $color-bt-add-light;
+    };
+
+    .icon {
+        height: 24px;
+        width: 24px;
+        margin:0 auto 10px auto; 
+    };
+};

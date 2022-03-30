@@ -1,0 +1,20 @@
+// ==========================================================================
+// ABSTRACTS / VARIABLES / #TYPOGRAPHY
+// ==========================================================================
+
+$include-font-face: true !default;
+$fonts-path: '../fonts/' !default;
+
+$font-family-display: 'Poppins', sans-serif;
+$font-family-body: Arial, Sans-serif;
+$font-family-button: 'Roboto Mono', monospace;
+
+$font-family-fallback: Arial, Sans-serif !default;
+
+$font-weight-normal: 400;
+$font-weight-bold: 600;
+$font-weight-display: 400;
+$font-weight-button: 700;
+
+$base-font-size: 16px;
+$base-line-height: 1.117;

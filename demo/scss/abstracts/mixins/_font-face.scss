@@ -1,0 +1,33 @@
+// ==========================================================================
+// ABSTRACTS / MIXINS / #FONT FACE
+// ==========================================================================
+
+@function font-url($filename) {
+    @return url($fonts-path + $filename);
+};
+
+@mixin font-face {
+    @at-root {
+        @font-face {
+            font-display: swap;
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: $font-weight-display;
+            src: font-url('Poppins-Regular.eot?#iefix');
+            src: font-url('Poppins-Regular.eot?#iefix') format('eot'),
+                 font-url('Poppins-Regular.woff2') format('woff2'),
+                 font-url('Poppins-Regular.woff') format('woff');
+        };
+
+        @font-face {
+            font-display: swap;
+            font-family: 'Roboto Mono';
+            font-style: normal;
+            font-weight: $font-weight-button;
+            src: font-url('RobotoMono-Bold.eot?#iefix');
+            src: font-url('RobotoMono-Bold.eot?#iefix') format('eot'),
+                 font-url('RobotoMono-Bold.woff2') format('woff2'),
+                 font-url('RobotoMono-Bold.woff') format('woff');
+        };
+    };
+};

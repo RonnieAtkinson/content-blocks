@@ -1,0 +1,53 @@
+// ==========================================================================
+// BASE / #BASE
+// ==========================================================================
+
+html {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow-y: scroll;
+
+    @if $include-font-face {
+        @include font-face;
+        font-family: $font-family-body, $font-family-fallback;
+    }
+}
+
+* {
+    &,
+    &:before,
+    &:after {
+        -moz-box-sizing: inherit;
+        -webkit-box-sizing: inherit;
+        box-sizing: inherit;
+    }
+}
+
+body {
+    color: $default-text-color;
+    font-size: $base-font-size;
+    font-weight: $font-weight-normal;
+
+    background: $color-dark-01;
+
+    -moz-osx-font-smoothing: grayscale; // [2]
+    -webkit-font-smoothing: antialiased; // [2]
+
+    margin: 0;
+    min-height: 100%;
+    box-sizing: border-box;
+};
+
+.width-container {
+    margin: 0 $grid-gutter-half;
+    max-width: $page-width;
+
+    @include mq($from: desktop) {
+        margin: 0 $grid-gutter;
+    }
+
+    @media (min-width: 64em) { //1024px
+        margin: 0 auto;
+    }
+}

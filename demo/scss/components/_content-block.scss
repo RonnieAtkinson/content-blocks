@@ -1,0 +1,150 @@
+// ==========================================================================
+// COMPONENTS / #CONTENT BLOCK
+// ==========================================================================
+
+.content-block {
+    position: relative;
+    margin-bottom: 15px;
+    padding: 15px;
+
+    -moz-user-select: none;
+    user-select: none;
+        
+    border-radius: $border-radius-default;
+    border-color: $color-dark-01;
+    background: $color-dark-02;
+
+    &.draggable {     
+        cursor: move;
+
+        &:hover {
+            opacity: .7;
+            transition: all 0.15s
+        };
+
+        label, input, textarea, select, button {
+            pointer-events: none;
+        };
+    };
+
+    &.droppable {
+        position: relative;
+        transition: all 0.15s;
+        border-top: solid 30px $color-dark-01;
+    };
+
+    &__title {
+        font-family: $font-family-display;
+        font-size: px-to-rem(24px);
+        padding: 0 0 5px 0;  
+    };
+
+    &__tab {
+        display: none;
+    
+        &.active {
+            display: block
+        };
+    };
+
+    &__nav {
+        margin-bottom: 25px;
+        border-bottom: solid $border-width-thin #323335;
+    };
+
+    // TEMP
+    .icon {
+        display: inline-block;
+        height: 18px;
+        width: 18px;
+        margin-right: 10px;
+    };
+};
+
+.content-blocks {
+    // background: #fff;
+};
+
+.content-blocks-buttons {
+    padding: 5px;
+    border-radius: $border-radius-default;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23333' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+};
+
+.bt-tab {
+    color: #b1b4b9;
+    background: none;
+    border: none;
+    padding: 0 0 10px 0;
+    position: relative;
+    margin-right: 15px;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: auto;
+    };
+
+    &.active {
+        color: $color-white;
+        
+        &:after {
+            content: '';
+            display: block;
+            position: absolute;
+            bottom: 0;
+            height: 2px;
+            width: 100%;
+            background-color: $color-active;
+        };
+    };
+};
+
+.bt-remove-group {
+    @include actionButton();
+
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    color: $color-bt-remove-light;
+    background: $color-bt-remove-dark;
+    border: solid $border-width-thin $color-bt-remove-light;
+
+    &:hover {
+        transition: all 0.15s;
+        color: $color-bt-remove-dark;
+        background: $color-bt-remove-light;
+    };
+};
+
+.bt-add {
+    @include actionButton();
+    color: $color-bt-add-light;
+    background: $color-bt-add-dark;
+    border: solid $border-width-thin $color-bt-add-light;
+
+    &:hover {
+        transition: all 0.15s;
+        color: $color-bt-add-dark;
+        background: $color-bt-add-light;
+    };
+};
+
+.bt-remove {
+    @include actionButton();
+    color: $color-bt-remove-light;
+    background: $color-bt-remove-dark;
+    border: solid $border-width-thin $color-bt-remove-light;
+ 
+    &:disabled {
+        cursor: auto;
+        opacity: .25;
+    };
+
+    &:hover {
+        &:not(:disabled) {
+            transition: all 0.15s;
+            color: $color-bt-remove-dark;
+            background: $color-bt-remove-light;
+        };
+    };
+};
