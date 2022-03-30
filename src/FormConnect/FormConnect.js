@@ -43,12 +43,14 @@ import OptionUtils from '../utils/Option';
 const defaultClasses = {
     'block:wrapper': 'content-blocks-wrapper',
     'block:parent': 'content-blocks',
-    'block:single': 'content-blocks__single',
+    'block:single': 'content-block',
+    'block:title': 'content-block__title',
+    'block:nav': 'content-block__nav',
+    'block:tab': 'content-block__tab',
+    'block:tab:active': 'active',
     'block:icon': 'icon',
     'form:group': 'form-group',
     'form:control': 'form-control',
-    'content:tab': 'content-tab',
-    'content:active': 'active',
     'button:wrapper': 'content-blocks-buttons',
     'button:addBlock': 'bt-add-group',
     'button:removeBlock': 'bt-remove-group',
@@ -56,7 +58,6 @@ const defaultClasses = {
     'button:removeDynamic': 'bt-remove',
     'button:tab': 'bt-tab',
     'button:tab:active': 'active',
-    'button:tab:wrapper': 'tabbing-buttons',
     'button:toggleDrag': 'bt-toggle-draggable',
     'button:toggleDrag:active': 'active',
     'drag:droppable': 'droppable',
@@ -705,8 +706,8 @@ export default class FormConnect {
         targetEl.disabled = true;
 
         // Update classes on the content tabs
-        DomClassUtils.removeClassFromChildren(parentContentBlock, this.getClassNameFor('content:tab'), this.getClassNameFor('content:active'));
-        parentContentBlock.querySelector(`.${targetTab}`).classList.add(this.getClassNameFor('content:active'));
+        DomClassUtils.removeClassFromChildren(parentContentBlock, this.getClassNameFor('block:tab'), this.getClassNameFor('block:tab:active'));
+        parentContentBlock.querySelector(`.${targetTab}`).classList.add(this.getClassNameFor('block:tab:active'));
     };
 
     //

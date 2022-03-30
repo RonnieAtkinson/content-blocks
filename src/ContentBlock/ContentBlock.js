@@ -116,7 +116,7 @@ export default class ContentBlock {
     addTabButtons(tabs, targetEl) {
         const { el: buttonWrapperEl } = new DomElement('div')
             .addAttributes({
-                classList: [...this.getClassNamesFor('button:tab:wrapper')]
+                classList: [...this.getClassNamesFor('block:nav')]
             })
             .appendTo(targetEl);
 
@@ -130,7 +130,7 @@ export default class ContentBlock {
                         `${this.getClassNameFor('button:tab')}--${contentTab}`
                     ],
                     dataset: {
-                        target: (`${this.getClassNameFor('content:tab')}--${contentTab}`)
+                        target: (`${this.getClassNameFor('block:tab')}--${contentTab}`)
                     }
                 })
                 .appendTo(buttonWrapperEl);
@@ -154,14 +154,14 @@ export default class ContentBlock {
             const { el: tabContainerEl } = new DomElement('div')
                 .addAttributes({
                     classList: [
-                        ...this.getClassNamesFor('content:tab'),
-                        `${this.getClassNameFor('content:tab')}--${tabContainer}`,
+                        ...this.getClassNamesFor('block:tab'),
+                        `${this.getClassNameFor('block:tab')}--${tabContainer}`,
                     ]
                 })
                 .appendTo(targetEl);
 
             if (tabs[tabContainer].active) {
-                tabContainerEl.classList.add(this.getClassNamesFor('content:active'));
+                tabContainerEl.classList.add(this.getClassNamesFor('block:tab:active'));
             };
 
             tabNodes[tabContainer] = tabContainerEl;
@@ -360,7 +360,10 @@ export default class ContentBlock {
 
         // Block legend
         const { el: legendEl } = new DomElement('legend') // [6]
-            .addAttributes({ textContent: display })
+            .addAttributes({
+                textContent: display,
+                classList: this.getClassNamesFor('block:title')
+            })
             .appendTo(blockSingleEl);
 
         if (icon) {
