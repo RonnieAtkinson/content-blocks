@@ -23,35 +23,28 @@
                             // },
                             formGroups: {
                                 content: {
+                                    attributes: {
+                                        classList: ['test'],
+                                    },
                                     // tab: 'content',
                                     label: 'Check me',
                                     element: {
                                         node: 'input',
                                         attributes: {
                                             type: 'checkbox',
-                                            className: 'test'
+                                            classList: ['test', 'test2']
                                         }
                                     }
                                 },
-                                // classes: {
-                                //     ...defaultFormControls.classes
-                                // }
                             }
                         }
                     };
 
                     new ContentBlocks(formEl, customBlocks);
                 };
-
-
             };
 
-
-
             document.addEventListener('DOMContentLoaded', AddContentBlocks.init);
-
-
-
         </script>
     </head>
 
