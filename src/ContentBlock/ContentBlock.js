@@ -245,7 +245,8 @@ export default class ContentBlock {
                 .addAttributes({
                     classList: [
                         ...this.getClassNamesFor('form:group'),
-                        `${this.getClassNameFor('form:group')}--${formGroup}`
+                        `${this.getClassNameFor('form:group')}--${formGroup}`,
+                        ...((formGroups[formGroup].attributes || {}).classList) || []
                     ],
                     dataset: ((formGroups[formGroup].attributes || {}).data)
                 })
@@ -272,7 +273,10 @@ export default class ContentBlock {
                     .addAttributes({
                         ...formGroups[formGroup].element.attributes || {},
                         name: DomNameUtils.generateName(index, formGroup),
-                        classList: [...this.getClassNamesFor('form:control')]
+                        classList: [
+                            ...this.getClassNamesFor('form:control'),
+                            ...(formGroups[formGroup].element.attributes || {}).classList || []
+                        ]
                     })
                     .appendTo(formGroupEl)
                 );
