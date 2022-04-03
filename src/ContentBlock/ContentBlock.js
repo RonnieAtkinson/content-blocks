@@ -258,17 +258,16 @@ export default class ContentBlock {
                 new DomElement('legend').addAttributes({ textContent: (formGroups[formGroup] || {}).label }).appendTo(formGroupEl);
                 this.addDynamicButtonsTo(formGroupEl);
                 continue;
-
-            } else {
-                new DomElement('label')
-                    .addAttributes({
-                        textContent: ((formGroups[formGroup] || {}).label),
-                        htmlFor: 'test' // @todo
-                    })
-                    .appendTo(formGroupEl);
             };
 
             if (hasNode) { // [10]
+                const { el: labelEl } = new DomElement('label')
+                    .addAttributes({
+                        textContent: ((formGroups[formGroup] || {}).label),
+                        // htmlFor: ''
+                    })
+                    .appendTo(formGroupEl);
+
                 ({ el: thisNode } = new DomElement(formGroups[formGroup].element.node)
                     .addAttributes({
                         ...formGroups[formGroup].element.attributes || {},
@@ -278,7 +277,7 @@ export default class ContentBlock {
                             ...(formGroups[formGroup].element.attributes || {}).classList || []
                         ]
                     })
-                    .appendTo(formGroupEl)
+                    .appendTo(labelEl)
                 );
             };
 
