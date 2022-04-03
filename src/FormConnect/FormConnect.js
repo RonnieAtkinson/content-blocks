@@ -30,6 +30,10 @@ import OptionUtils from '../utils/Option';
 //      }   
 // });
 //
+// Modifier classes always use the first class in the array:
+// {'block:wrapper' : ['classname1', 'classname2', 'etc']}
+// modifier: classname1--modifier
+//
 // They are retrieved using a helper:
 // getClassNamesFor('block:wrapper');
 // # If only one class name is defined it will be added to an array.
