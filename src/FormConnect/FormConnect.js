@@ -117,6 +117,16 @@ export const defaultFormGroups = {
             }
         }
     },
+    paragraph: {
+        label: 'Paragraph',
+        dynamic: true,
+        attributes: {
+            data: {
+                el: 'textarea',
+                name: 'content'
+            }
+        }
+    },
     inputTextarea: {
         label: 'Content',
         element: {
@@ -218,9 +228,10 @@ const defaultContentBlocks = {
             classes: { display: 'Classes' },
         },
         formGroups: {
-            content: {
-                ...defaultFormGroups.inputTextarea,
-                tab: 'content',
+            paragraph: {
+                ...defaultFormGroups.paragraph,
+                label: 'Content',
+                tab: 'content'
 
             },
             classes: {
@@ -293,15 +304,8 @@ const defaultContentBlocks = {
                 }
             },
             paragraph: {
-                tab: 'content',
-                label: 'Paragraph',
-                dynamic: true,
-                attributes: {
-                    data: {
-                        el: 'textarea',
-                        name: 'content'
-                    }
-                }
+                ...defaultFormGroups.paragraph,
+                tab: 'content'
             },
             classes: {
                 ...defaultFormGroups.classes
