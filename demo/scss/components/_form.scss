@@ -8,16 +8,23 @@ fieldset {
     border:none;
 
     legend {
-        width: 100%;
         float: left;
         @include clearfix();
-    }
-}
+    };
+};
 
 label, legend {
     display: inline-block;
     margin-bottom: 0.5rem;
-}
+    width: 100%;
+};
+
+input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    margin-top: 0.5rem;
+};
 
 input {
     color-scheme: dark;
@@ -35,7 +42,7 @@ textarea {
     resize: vertical;
     min-height: 150px;
     font: inherit;
-}
+};
 
 .form-group {
     margin-bottom: 1rem;
@@ -47,12 +54,10 @@ textarea {
 
             &:last-of-type{
                 margin-bottom: 20px;
-            }
+            };
 
-        }
-        
-    }
-
+        }; 
+    };
 };
 
 .form-control {
@@ -80,5 +85,27 @@ textarea {
         border-color: #00ead270;
         outline: 0;
         box-shadow: 0 0 0 0.2rem rgba(#00ead2, 0.2);
+    };
+};
+
+.form-check {
+    float: left;
+    // margin-left: -1.5em;
+
+    &-input {
+        float: left;
+        // margin-top: 0;
+        margin: 0 0.5rem 0 0;
+        width: 1rem;
+        height: 1rem;
+        vertical-align: top;
+    };
+
+    &:after {
+        @include clearfix();
+    };
+
+    label {
+        margin-bottom: 0;
     };
 };
