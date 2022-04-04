@@ -488,29 +488,6 @@ export default class FormConnect {
     };
 
     //
-    // Update wrapper indexes
-    // Updates the data-id on content group fieldsets
-    // Updates the child postContent names
-    //
-    // @usage
-    // this.updateWrapperIndexes();
-    //
-    // [1] Start the index at 1
-    // [2] For each content block in the node list:
-    // [3] Set data-id to the index [1]
-    // [4] Call this.updatedIndexInNames() to update the index in child name attributes.
-    // [5] Increment the index by 1 each iteration.
-    //
-    updateWrapperIndexes() {
-        let newIndex = 1; // [1]
-        for (const contentBlock of this.contentBlocksLNL) { // [2]
-            contentBlock.dataset.id = newIndex; // [3]
-            DomNameUtils.updateIndexInNames(contentBlock, newIndex);
-            newIndex++; // [5]
-        };
-    };
-
-    //
     // Toggle dynamic remove button
     // Conditionally toggles the disabled attribute on the remove button
     //
@@ -570,7 +547,7 @@ export default class FormConnect {
     // @example
     // this.addDynamicElement();
     //
-    // [1] Get the data-id from the closest fieldset.
+    // [1] Get the data-index from the closest fieldset.
     // [2] Destruct the name and type from the closest form control dataset.
     //     # data-name, data-type.
     // [3] Define a new params object.
@@ -583,7 +560,7 @@ export default class FormConnect {
     //     # Disables the remove button if required.
     //
     addDynamicElement(targetEl, elType, allInputs) {
-        const contentIndex = targetEl.closest(`.${this.getClassNameFor('block:single')}`).dataset.id; // [1]
+        const contentIndex = targetEl.closest(`.${this.getClassNameFor('block:single')}`).dataset.index; // [1]
         const { name: inputName, type: inputType, placeholder: inputPlaceholder } = targetEl.closest(`.${this.getClassNameFor('form:group')}`).dataset; // [2]
         // const params = { name: this.generateName(contentIndex, inputName, true) }; // [3]
         const params = {
@@ -773,7 +750,7 @@ export default class FormConnect {
 
             case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:addBlock')]): // [8]
                 const contentBlock = new ContentBlock(
-                    this.contentBlocksLNL,
+                    this.contentBlocksLNL.length,
                     this.contentBlocksParentEl,
                     this.options,
                     this.dragDrop

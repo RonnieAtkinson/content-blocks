@@ -169,7 +169,7 @@ export default class DragDrop {
     //
     // [3] Set the drag operations drag data to the specified format and data
     //     # dataTransfer.setData(format, data);
-    //     # Currently passing data-id.
+    //     # Currently passing data-index.
     // [4] Specify the effect that is allowed for the drag operation
     //     # move - An item may be moved to a new location
     //
@@ -177,7 +177,7 @@ export default class DragDrop {
         const targetEl = event.target.closest(`.${this.getClassNameFor('block:single')}`); // [1]
         if (!targetEl.draggable) return; // [2]
 
-        event.dataTransfer.setData('text/plain', targetEl.dataset.id); // [3]
+        event.dataTransfer.setData('text/plain', targetEl.dataset.index); // [3]
         event.dataTransfer.effectAllowed = 'move'; // [4]
     };
 
@@ -291,8 +291,8 @@ export default class DragDrop {
     // [1] Set targetEl to the closest ancestor with the block:single class.
     //     # TargetEl is where we want to drop the node.
     // [2] Get the data set in handleDragStart() and assign it to a const.
-    //     # The data set was the data-id
-    // [3] Set newNode to the element with the data-id from [2]
+    //     # The data set was the data-index
+    // [3] Set newNode to the element with the data-index from [2]
     //     # This is the node we want to move.
     // [4] If targetEl or targetEl.parentElement are falsy return.
     // [5] Insert the new node before targetEl.
@@ -303,7 +303,7 @@ export default class DragDrop {
 
         const targetEl = event.target.closest(`.${this.getClassNameFor('block:single')}`); // [1]
         const data = event.dataTransfer.getData('text/plain'); // [2]
-        const newNode = document.querySelector(`[data-id='${data}']`); // [3]
+        const newNode = document.querySelector(`[data-index='${data}']`); // [3]
 
         if (!targetEl || !targetEl.parentElement) return; // [4]
 
