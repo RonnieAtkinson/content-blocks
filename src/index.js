@@ -2,11 +2,9 @@
 // CONTENT BLOCKS
 // ==========================================================================
 //
-// @todo change the data-id to data-index
 // @todo default options
 // @todo multiple contentBlock parents
-// @todo label for attribute
-// @todo event emitter for adding and removing blocks
+// @todo event emitter on adding and removing blocks
 //
 
 //
