@@ -23,8 +23,8 @@ export default class ContentBlock {
     //
     // Constructor
     //
-    constructor(contentBlocksLNL, parentEl, options, dragDrop) {
-        this.contentBlocksLNL = contentBlocksLNL;
+    constructor(index, parentEl, options, dragDrop) {
+        this.index = index + 1;
         this.contentBlocksParentEl = parentEl;
         this.options = {
             ...defaultOptions,
@@ -171,17 +171,61 @@ export default class ContentBlock {
     };
 
     //
+    // Block wrapper
+    //
+    addBlockWrapper(blockType) {
+        const { el } = new DomElement('fieldset') // [5]
+            .addAttributes({
+                classList: [...this.getClassNamesFor('block:single'), `${this.getClassNameFor('block:single')}--${blockType}`],
+                dataset: {
+                    // id: this.index
+                    index: this.index
+                }
+            });
+
+        // Add conditional attributes
+        if (this.dragDrop.dragState) {
+            el.classList.add(...this.getClassNamesFor('drag:draggable'));
+            el.draggable = true;
+        };
+
+        return el;
+    };
+
+    //
+    // Block title
+    //
+    addBlockTitleTo(BlockEl, titleOptions) {
+        const { display, icon } = titleOptions;
+        const { el: displayEl } = new DomElement('legend') // [6]
+            .addAttributes({
+                textContent: display,
+                classList: this.getClassNamesFor('block:title')
+            })
+            .appendTo(BlockEl);
+
+        if (icon) {
+            new DomElement('i')
+                .addAttributes({
+                    classList: [
+                        ...this.getClassNamesFor('block:icon'),
+                        `${this.getClassNameFor('block:icon')}--${icon}`
+                    ]
+                })
+                .prependTo(displayEl);
+        };
+
+        return this;
+    };
+
+    //
     // Add content block form controls
     // Adds the form-controls for the content type
     // ie: <div class="form-control"></div>
     //
-    // @todo
-    // Need to add a 'for' attribute to the label node
-    //
     // @param {HTMLElement} fieldSetEl
     // @param {Object} formControls
     // @param {Object} variations
-    // @param {Number} index
     //
     // @throws
     // Will throw an error if form controls is not an object.
@@ -226,70 +270,65 @@ export default class ContentBlock {
     //      # Create a new node for the variation.
     //      # Add it as a child to the parent variation node [8] & [10].
     //
-    addFormGroups(parentNodes, formGroups, variations, index) {
-        if (typeof formGroups != 'object' || !Object.keys(formGroups).length) throw new Error('No form controls were passed'); // [1]
+    addFormGroup(parentNodes, groupName, formGroup, variations) {
+        const tabName = formGroup.tab;
+        const parentEl = (Object.keys(parentNodes).length > 0) ? parentNodes[tabName] : parentNodes;
 
-        for (const formGroup in formGroups) { // [2]
+        if (CheckValue.isNullUndefindedEmpty(parentEl)) throw new Error(`${formGroup.label} has been assigned to a tab that hasn't been defined`);
 
-            const tabName = formGroups[formGroup].tab;
-            const parentEl = (Object.keys(parentNodes).length > 0) ? parentNodes[tabName] : parentNodes;
+        const hasNode = !!((formGroup.element || {}).node); // [3]
+        const hasVariations = groupName === 'variation' && !!(Object.keys(variations || {}).length) && hasNode; // [4]
+        const isDynamic = !!((formGroup || {}).dynamic); // [5]
+        const elType = (isDynamic) ? 'fieldset' : 'div'; // [6]
 
-            if (CheckValue.isNullUndefindedEmpty(parentEl)) throw new Error(`${formGroups[formGroup].label} has been assigned to a tab that hasn't been defined`);
+        const { el: formGroupEl } = new DomElement(elType) // [7]
+            .addAttributes({
+                classList: [
+                    ...this.getClassNamesFor('form:group'),
+                    `${this.getClassNameFor('form:group')}--${groupName}`,
+                    ...((formGroup.attributes || {}).classList) || []
+                ],
+                dataset: ((formGroup.attributes || {}).data)
+            })
+            .appendTo(parentEl);
 
-            const hasNode = !!((formGroups[formGroup].element || {}).node); // [3]
-            const hasVariations = formGroup === 'variation' && !!(Object.keys(variations || {}).length) && hasNode; // [4]
-            const isDynamic = !!((formGroups[formGroup] || {}).dynamic); // [5]
-            const elType = (isDynamic) ? 'fieldset' : 'div'; // [6]
+        let thisNode; // [8]
 
-            const { el: formGroupEl } = new DomElement(elType) // [7]
+        if (isDynamic) { // [9]
+            new DomElement('legend').addAttributes({ textContent: (formGroup || {}).label }).appendTo(formGroupEl);
+            this.addDynamicButtonsTo(formGroupEl);
+            // continue;
+            return;
+        };
+
+        if (hasNode) { // [10]
+            const { el: labelEl } = new DomElement('label')
                 .addAttributes({
-                    classList: [
-                        ...this.getClassNamesFor('form:group'),
-                        `${this.getClassNameFor('form:group')}--${formGroup}`,
-                        ...((formGroups[formGroup].attributes || {}).classList) || []
-                    ],
-                    dataset: ((formGroups[formGroup].attributes || {}).data)
+                    textContent: ((formGroup || {}).label),
                 })
-                .appendTo(parentEl);
+                .appendTo(formGroupEl);
 
-            let thisNode; // [8]
+            ({ el: thisNode } = new DomElement(formGroup.element.node)
+                .addAttributes({
+                    ...formGroup.element.attributes || {},
+                    name: DomNameUtils.generateName(this.index, groupName),
+                    classList: [
+                        ...this.getClassNamesFor('form:control'),
+                        ...(formGroup.element.attributes || {}).classList || []
+                    ]
+                })
+                .appendTo(labelEl)
+            );
+        };
 
-            if (isDynamic) { // [9]
-                new DomElement('legend').addAttributes({ textContent: (formGroups[formGroup] || {}).label }).appendTo(formGroupEl);
-                this.addDynamicButtonsTo(formGroupEl);
-                continue;
-            };
-
-            if (hasNode) { // [10]
-                const { el: labelEl } = new DomElement('label')
+        if (hasVariations) { // [11]
+            for (const variation in variations) {
+                new DomElement('option')
                     .addAttributes({
-                        textContent: ((formGroups[formGroup] || {}).label),
-                        // htmlFor: ''
+                        value: variation,
+                        textContent: variations[variation].display
                     })
-                    .appendTo(formGroupEl);
-
-                ({ el: thisNode } = new DomElement(formGroups[formGroup].element.node)
-                    .addAttributes({
-                        ...formGroups[formGroup].element.attributes || {},
-                        name: DomNameUtils.generateName(index, formGroup),
-                        classList: [
-                            ...this.getClassNamesFor('form:control'),
-                            ...(formGroups[formGroup].element.attributes || {}).classList || []
-                        ]
-                    })
-                    .appendTo(labelEl)
-                );
-            };
-
-            if (hasVariations) { // [11]
-                for (const variation in variations) {
-                    new DomElement('option')
-                        .addAttributes({
-                            value: variation,
-                            textContent: variations[variation].display
-                        })
-                        .appendTo(thisNode);
-                };
+                    .appendTo(thisNode);
             };
         };
     };
@@ -313,7 +352,7 @@ export default class ContentBlock {
     // [1] If contentType is falsy throw an error.
     // [2] Deconstruct some keys from this.contentGroups.
     // [3] If the desctucted display or formcontrols keys are falsy thow an error
-    // [4] Set an index from the current length of the content blocks in the live node list
+    // [4] 
     //
     // [5] Create a new content block
     //     # Set the drag state from this.dragState
@@ -342,43 +381,14 @@ export default class ContentBlock {
         if (!blockType) throw new Error('No content type provided for this block'); // [1]
         const { display, icon, formGroups, variations, tabs } = (blockOptions || {}); // [2]
         if (!display || !formGroups) throw new Error(`Invalid options provided for the ${blockType} content block`); // [3]
-        const index = this.contentBlocksLNL.length + 1; // [4]
-
+        if (typeof formGroups != 'object' || !Object.keys(formGroups).length) throw new Error('No form controls were passed');
         const hasTabs = !!(tabs);
 
-        // Fieldset wrapper
-        const { el: blockSingleEl } = new DomElement('fieldset') // [5]
-            .addAttributes({
-                classList: [...this.getClassNamesFor('block:single'), `${this.getClassNameFor('block:single')}--${blockType}`],
-                dataset: {
-                    id: index
-                }
-            });
-
-        // Add conditional attributes
-        if (this.dragDrop.dragState) {
-            blockSingleEl.classList.add(...this.getClassNamesFor('drag:draggable'));
-            blockSingleEl.draggable = true;
-        };
+        // Block wrapper
+        const blockSingleEl = this.addBlockWrapper(blockType);
 
         // Block legend
-        const { el: legendEl } = new DomElement('legend') // [6]
-            .addAttributes({
-                textContent: display,
-                classList: this.getClassNamesFor('block:title')
-            })
-            .appendTo(blockSingleEl);
-
-        if (icon) {
-            new DomElement('i')
-                .addAttributes({
-                    classList: [
-                        ...this.getClassNamesFor('block:icon'),
-                        `${this.getClassNameFor('block:icon')}--${icon}`
-                    ]
-                })
-                .prependTo(legendEl);
-        };
+        this.addBlockTitleTo(blockSingleEl, { display, icon });
 
         // Block remove button
         new DomElement('button') // [7]
@@ -397,7 +407,7 @@ export default class ContentBlock {
             .addAttributes({
                 type: 'hidden',
                 value: blockType,
-                name: DomNameUtils.generateName(index, 'type')
+                name: DomNameUtils.generateName(this.index, 'type')
             })
             .appendTo(blockSingleEl);
 
@@ -405,14 +415,14 @@ export default class ContentBlock {
         const contentTabs = (hasTabs) ? this.addTabContainers(tabs, blockSingleEl) : blockSingleEl;
 
         // Form groups
-        this.addFormGroups(contentTabs, formGroups, variations, index); // [13]
+        for (const formGroup in formGroups) { // [2]
+            this.addFormGroup(contentTabs, formGroup, formGroups[formGroup], variations); // [13]
+        };
 
         // Render to dom
         this.contentBlocksParentEl.appendChild(blockSingleEl); // [14]
 
         // if (this.isDragAllowed()) this.toggleDragEl.disabled = false; 
-        // if (this.dragDrop.isDragAllowed()) this.dragDrop.toggleDragEl.disabled = false; // [15] extract this?
         if (this.dragDrop.isDragAllowed()) this.dragDrop.toggleDragEl.disabled = false; // [15] extract this?
     };
-
 };
