@@ -5,11 +5,11 @@
     width: calc(16.6666% - 20px);
     min-height: 90px;
     margin: 10px 10px;
-    border: $border-width-thin solid #323335;
+    border: $border-width-thin solid $color-border-light;
     border-radius: $border-radius-default;
 
     background: $color-dark-01;
-    color: #fff;
+    color: $color-white;
     box-sizing: border-box;
     vertical-align: top;
     transition: all 0.15s;
@@ -26,7 +26,6 @@
         right: 12px;
         height: 20px;
         width: 20px;
-        // background: #323335;
         background: rgba($color-bt-add-light, 0.3);
         border-radius: 15px;
     };

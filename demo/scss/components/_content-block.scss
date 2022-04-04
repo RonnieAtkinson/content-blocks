@@ -49,7 +49,7 @@
 
     &__nav {
         margin-bottom: 25px;
-        border-bottom: solid $border-width-thin #323335;
+        border-bottom: solid $border-width-thin $color-border-light;
     };
 
     // TEMP
@@ -61,10 +61,6 @@
     };
 };
 
-// .content-blocks {
-//     // background: #fff;
-// };
-
 .content-blocks-buttons {
     padding: 5px;
     border-radius: $border-radius-default;
@@ -72,7 +68,7 @@
 };
 
 .bt-tab {
-    color: #b1b4b9;
+    color: $color-tab-disabled;
     background: none;
     border: none;
     padding: 0 0 10px 0;

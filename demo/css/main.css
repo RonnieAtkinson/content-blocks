@@ -66,7 +66,6 @@ fieldset {
 }
 
 fieldset legend {
-  width: 100%;
   float: left;
 }
 
@@ -79,6 +78,14 @@ fieldset legend:after {
 label, legend {
   display: inline-block;
   margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin-top: 0.5rem;
 }
 
 input {
@@ -107,7 +114,7 @@ textarea {
 }
 
 .form-group--classes .form-control:last-of-type, .form-group--paragraph .form-control:last-of-type {
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
 .form-control {
@@ -125,9 +132,31 @@ textarea {
 }
 
 .form-control:focus {
-  border-color: #00ead270;
+  border-color: rgba(0, 234, 210, 0.7);
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(0, 234, 210, 0.2);
+}
+
+.form-check {
+  float: left;
+}
+
+.form-check-input {
+  float: left;
+  margin: 0 0.5rem 0 0;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: top;
+}
+
+.form-check:after:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.form-check label {
+  margin-bottom: 0;
 }
 
 .content-block {

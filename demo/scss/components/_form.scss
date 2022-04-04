@@ -34,7 +34,7 @@ input {
         box-shadow:  0 0 0 50px $color-dark-01 inset;
 
         background: $color-dark-01 !important;
-        color: #959ba0 !important;
+        color: $form-control-text-color !important;
     };
 };
 
@@ -69,32 +69,26 @@ textarea {
     line-height: 1.5;
 
     color: $form-control-text-color;
-    // color: #00ead2;
     background: $color-dark-01;
 
     background-clip: padding-box;
-    border: 1px solid #323335;
-    // border-radius: 0.25rem;
+    border: 1px solid $color-border-light;
     border-radius: $border-radius-small;
 
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 
     &:focus{
-        // color: #959ba0;
-    
-        border-color: #00ead270;
+        border-color: rgba($color-active, 0.7);
         outline: 0;
-        box-shadow: 0 0 0 0.2rem rgba(#00ead2, 0.2);
+        box-shadow: 0 0 0 0.2rem rgba($color-active, 0.2);
     };
 };
 
 .form-check {
     float: left;
-    // margin-left: -1.5em;
 
     &-input {
         float: left;
-        // margin-top: 0;
         margin: 0 0.5rem 0 0;
         width: 1rem;
         height: 1rem;
