@@ -5,10 +5,11 @@
 //
 // Imports
 //
-import CheckValue from '../utils/CheckValue';
 import DomElement from '../DomElement/DomElement';
 import DomNameUtils from '../utils/DomName';
+import DomDataUtils from '../utils/DomData';
 import OptionUtils from '../utils/Option';
+import FormGroup from './FormGroup/FormGroup';
 
 //
 // Default options
@@ -71,41 +72,6 @@ export default class ContentBlock {
     //
     getClassNamesFor(name) {
         return OptionUtils.getClassNamesFor(name, this.options.classes); // [1]
-    };
-
-    //
-    // Add dynamic buttons
-    // These buttons control the dynamic elements
-    // Dynamic elements are elements that can be manually added to or removed from a form-control after it has been rendered to the dom
-    //
-    // @param {HTMLElement} targetEl
-    //
-    // @usage
-    // this.addDynamicButtonsTo(targetEl);
-    //
-    // [1] Create a new add button and append it to targetEl.
-    // [2] Create a new remove button and append it to targetEl.
-    //     New content block dynamic elements will always be zero so the remove button can be set to disabled.
-    //
-    addDynamicButtonsTo(targetEl) {
-        new DomElement('button') // [1]
-            .addAttributes({
-                type: 'button',
-                textContent: this.options.text['button:addDynamic'],
-                classList: [...this.getClassNamesFor('button:addDynamic')]
-            })
-            .appendTo(targetEl)
-
-        new DomElement('button')
-            .addAttributes({
-                type: 'button',
-                textContent: this.options.text['button:removeDynamic'],
-                classList: [...this.getClassNamesFor('button:removeDynamic')],
-                disabled: true
-            })
-            .appendTo(targetEl) // [2]
-
-        return this;
     };
 
     //
@@ -219,121 +185,6 @@ export default class ContentBlock {
     };
 
     //
-    // Add content block form controls
-    // Adds the form-controls for the content type
-    // ie: <div class="form-control"></div>
-    //
-    // @param {HTMLElement} fieldSetEl
-    // @param {Object} formControls
-    // @param {Object} variations
-    //
-    // @throws
-    // Will throw an error if form controls is not an object.
-    // Will throw an error if form controls length is zero.
-    //
-    // @usage
-    // this.addContentBlockFormControls(fieldsetEl, formControls, variations);
-    //
-    // [1] If the form controls parameter is not an object or its an empty object, throw an error
-    // [2] For each key in form controls:
-    // [3] Define hasNode
-    //     # Does formcontrol.element have a node key
-    // [4] Define hasVariations
-    //     # Is the form control key 'variation'
-    //     # Does the variations parameter have a length greater than 0
-    //     # Does this iteration have a node
-    // [5] Define isDynamic
-    //     # Is the dynamic key truthy
-    // [6] Set the element type based on is dynamic
-    //     # Dynamic elements are placed in a fieldset with a legend
-    //     # Non-dynamic elements are placed in a div with a label
-    // [7] Add a new form control element
-    //     # This will be the parent node
-    // [8] Define a placeholder for the node type
-    //     # Defining it here will mean any scopes up the chain have access to it.
-    // [9] If this iteration is dynamic
-    //     # Will render with zero inputs initally, the user will be able to add them as needed
-    //     # Dynamic form controls will be a fieldset
-    //     # Add a legend node to [7] (fieldset)
-    //     # Add the buttons to [7] (fieldset) that allow inputs to be added and removed
-    //     # If a form control is dynamic it wont initally have nodes so just continue with the next iteration
-    //     
-    //     If this iteration is not dynamic
-    //     # Add a label to [7] (div)
-    //
-    // [10] If this iteration has a node
-    //      # Create the node and add it to [7] (div)
-    //      # Assign a reference of it to [8]
-    //
-    // [11] If this iteration has variations
-    //      # For each variation in the variations parameter:
-    //      # Create a new node for the variation.
-    //      # Add it as a child to the parent variation node [8] & [10].
-    //
-    addFormGroup(parentNodes, groupName, formGroup, variations) {
-        const tabName = formGroup.tab;
-        const parentEl = (Object.keys(parentNodes).length > 0) ? parentNodes[tabName] : parentNodes;
-
-        if (CheckValue.isNullUndefindedEmpty(parentEl)) throw new Error(`${formGroup.label} has been assigned to a tab that hasn't been defined`);
-
-        const hasNode = !!((formGroup.element || {}).node); // [3]
-        const hasVariations = groupName === 'variation' && !!(Object.keys(variations || {}).length) && hasNode; // [4]
-        const isDynamic = !!((formGroup || {}).dynamic); // [5]
-        const elType = (isDynamic) ? 'fieldset' : 'div'; // [6]
-
-        const { el: formGroupEl } = new DomElement(elType) // [7]
-            .addAttributes({
-                classList: [
-                    ...this.getClassNamesFor('form:group'),
-                    `${this.getClassNameFor('form:group')}--${groupName}`,
-                    ...((formGroup.attributes || {}).classList) || []
-                ],
-                dataset: ((formGroup.attributes || {}).data)
-            })
-            .appendTo(parentEl);
-
-        let thisNode; // [8]
-
-        if (isDynamic) { // [9]
-            new DomElement('legend').addAttributes({ textContent: (formGroup || {}).label }).appendTo(formGroupEl);
-            this.addDynamicButtonsTo(formGroupEl);
-            // continue;
-            return;
-        };
-
-        if (hasNode) { // [10]
-            const { el: labelEl } = new DomElement('label')
-                .addAttributes({
-                    textContent: ((formGroup || {}).label),
-                })
-                .appendTo(formGroupEl);
-
-            ({ el: thisNode } = new DomElement(formGroup.element.node)
-                .addAttributes({
-                    ...formGroup.element.attributes || {},
-                    name: DomNameUtils.generateName(this.index, groupName),
-                    classList: [
-                        ...this.getClassNamesFor('form:control'),
-                        ...(formGroup.element.attributes || {}).classList || []
-                    ]
-                })
-                .appendTo(labelEl)
-            );
-        };
-
-        if (hasVariations) { // [11]
-            for (const variation in variations) {
-                new DomElement('option')
-                    .addAttributes({
-                        value: variation,
-                        textContent: variations[variation].display
-                    })
-                    .appendTo(thisNode);
-            };
-        };
-    };
-
-    //
     // Add content block
     // Adds a content block to the DOM
     //
@@ -377,7 +228,7 @@ export default class ContentBlock {
     // [15] If drag is allowed enabled the drag button
     //      # Dragging is allowed when there is > 1 content block in the DOM
     //
-    addContentBlock(blockType, blockOptions) {
+    add(blockType, blockOptions) {
         if (!blockType) throw new Error('No content type provided for this block'); // [1]
         const { display, icon, formGroups, variations, tabs } = (blockOptions || {}); // [2]
         if (!display || !formGroups) throw new Error(`Invalid options provided for the ${blockType} content block`); // [3]
@@ -415,8 +266,9 @@ export default class ContentBlock {
         const contentTabs = (hasTabs) ? this.addTabContainers(tabs, blockSingleEl) : blockSingleEl;
 
         // Form groups
-        for (const formGroup in formGroups) { // [2]
-            this.addFormGroup(contentTabs, formGroup, formGroups[formGroup], variations); // [13]
+        const formGroup = new FormGroup(contentTabs, variations, this.index, this.options);
+        for (const group in formGroups) { // [2]
+            formGroup.add(group, formGroups[group]);
         };
 
         // Render to dom
@@ -424,5 +276,28 @@ export default class ContentBlock {
 
         // if (this.isDragAllowed()) this.toggleDragEl.disabled = false; 
         if (this.dragDrop.isDragAllowed()) this.dragDrop.toggleDragEl.disabled = false; // [15] extract this?
+    };
+
+    //
+    // Remove
+    // Removes a content block from the DOM
+    //
+    // @param {HTMLElement} targetEl
+    //
+    // @usage
+    // this.removeContentBlock(targetEl);
+    //
+    // [1] If targetEl is falsy return.
+    // [2] Remove targetEl from the DOM.
+    // [3] Update the indexes in the siblings that are left
+    // [4] If dragging is not allowed disable it.
+    //     # Dragging will be disabled if there's less than 2 content blocks in the DOM.
+    //
+    remove(targetEl, contentBlocksLNL) {
+        if (!targetEl) return; // [1]
+        targetEl.remove(); // [2]
+
+        DomDataUtils.updateWrapperIndexes(contentBlocksLNL);
+        if (!this.dragDrop.isDragAllowed()) this.dragDrop.disableDrag();
     };
 };
