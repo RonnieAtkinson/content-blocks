@@ -6,13 +6,11 @@
 // Imports
 //
 import DomClassUtils from '../utils/DomClass';
-import DomNameUtils from '../utils/DomName';
-import DomDataUtils from '../utils/DomData';
-import CheckValue from '../utils/CheckValue';
 import DomElement from '../DomElement/DomElement';
 import ContentBlock from '../ContentBlock/ContentBlock';
 import DragDrop from '../DragDrop/DragDrop';
 import OptionUtils from '../utils/Option';
+import FormGroup from '../ContentBlock/FormGroup/FormGroup';
 
 //
 // Default classes
@@ -390,9 +388,6 @@ export default class FormConnect {
         if (!formEl || formEl.nodeName != 'FORM') throw new Error('A valid form node is required to connect a form'); // [1]
         if (!contentBlocks || typeof contentBlocks != 'object') throw new Error(`Content groups must be passed as an object. Currently ${typeof contentGroups}`); // [2]
 
-        this.ACTION_ADD = 'add';
-        this.ACTION_REMOVE = 'remove';
-
         this.formEl = formEl; // [3]
         this.contentGroups = { // [4]
             ...defaultContentBlocks,
@@ -427,6 +422,13 @@ export default class FormConnect {
             this.contentBlocksLNL,
             this.options
         ); // NEW
+
+        this.contentBlock = new ContentBlock(
+            this.contentBlocksLNL.length,
+            this.contentBlocksParentEl,
+            this.options,
+            this.dragDrop
+        );
 
         this.render(); // [15]
     };
@@ -488,122 +490,6 @@ export default class FormConnect {
     };
 
     //
-    // Toggle dynamic remove button
-    // Conditionally toggles the disabled attribute on the remove button
-    //
-    // Sets the disabled status of the remove button based on the number of inputs
-    // Zero inputs = disabled
-    // More than zero = enabled
-    // 
-    // @param {HTMLElement} targetEl
-    // @param {number} inputLength
-    // @param {string} action
-    //
-    // @throws
-    // Will throw an error if targetEl is a falsy value.
-    // Will throw an error if inputLength is null, undefined, or empty.
-    // Will throw an error if action is not 'add' or 'remove'.
-    //
-    // @usage
-    // this.toggleDynamicRemoveButton(targetEl, inputLength, action);
-    //
-    // @example 
-    // this.toggleDynamicRemoveButton(targetEl, 1, 'add'); 
-    // Output: targetEl.disabled = false;
-    //
-    // @example 
-    // this.toggleDynamicRemoveButton(targetEl, 0, 'remove');
-    // Output: targetEl.disabled = true;
-    //
-    // [1] If targetEl is falsy or inputLength is null, undefined, or empty throw an error.
-    //     # Checking for null, undefined, or empty because it needs to let through 0.
-    // [2] If action does not equal 'add' or 'remove' throw an error.
-    // [3] If the length of inputs is zero assigns true otherwise assigns false.
-    // [4] We only want to set the disabled attribute when required:
-    //     # If the action is add and the input length is greater than one: the button doesnt need it's disabled attribute toggled.
-    //     # If the action is remove and the input length is not zero: the button doesnt need it's disabled attribute toggled.
-    // [5] Set the disabled attribute of targetEl
-    //
-    toggleDynamicRemoveButton(targetEl, inputLength, action) {
-        if (!targetEl || CheckValue.isNullUndefindedEmpty(inputLength)) throw new Error('To toggle the remove button a required parameter is missing'); // [1]
-        if (![this.ACTION_ADD, this.ACTION_REMOVE].includes(action)) throw new Error(`To toggle the remove button the action parmeter needs to be \'add\' or \'remove\'. ${action} was provided.`); // [2]
-        const shouldDisable = inputLength === 0; // [3]
-        if ((action === this.ACTION_ADD && inputLength > 1) || (action === this.ACTION_REMOVE && !shouldDisable)) return; // [4]
-        targetEl.disabled = shouldDisable; // [5]
-    };
-
-    //
-    // Add dynamic element
-    // Adds a dynamic element to the DOM.
-    // Dynamic elements are elements that can be manually added to or removed from a form-control after it has been rendered to the dom.
-    //
-    // @param {HTMLElement} targetEl
-    // @param {string} elType
-    // @param {Live NodeList} allInputs
-    //
-    // @usage
-    // this.addDynamicElement(targetEl, elType, allInputs);
-    //
-    // @example
-    // this.addDynamicElement();
-    //
-    // [1] Get the data-index from the closest fieldset.
-    // [2] Destruct the name and type from the closest form control dataset.
-    //     # data-name, data-type.
-    // [3] Define a new params object.
-    //     # Only needs the name at this point.
-    // [4] If there was a data-type on the parent [2] add a 'type' attribute to the params object:
-    //     # This is in a conditional statement because not all inputs need a type param.
-    //     # textarea for example doesn't need one. 
-    // [5] Create a new dom element using the params object and insert before targetEl
-    // [6] Call toggleDynamicRemoveButton();
-    //     # Disables the remove button if required.
-    //
-    addDynamicElement(targetEl, elType, allInputs) {
-        const contentIndex = targetEl.closest(`.${this.getClassNameFor('block:single')}`).dataset.index; // [1]
-        const { name: inputName, type: inputType, placeholder: inputPlaceholder } = targetEl.closest(`.${this.getClassNameFor('form:group')}`).dataset; // [2]
-        // const params = { name: this.generateName(contentIndex, inputName, true) }; // [3]
-        const params = {
-            name: DomNameUtils.generateName(contentIndex, inputName, true),
-            classList: [...this.getClassNamesFor('form:control')]
-        };
-        if (inputType) params.type = inputType; // [4]
-        if (inputPlaceholder) params.placeholder = inputPlaceholder;
-
-        new DomElement(elType).addAttributes(params).insertBeforeEl(targetEl); // [5]
-        this.toggleDynamicRemoveButton(targetEl.nextElementSibling, allInputs.length, this.ACTION_ADD); // [6]
-
-        return this;
-    };
-
-    //
-    // Remove dynamic element
-    // Removes a dynamic element from the DOM
-    // Dynamic elements are elements that can be manually added to or removed from a form-control after it has been rendered to the dom
-    //
-    // @param {HTMLElement} targetEl
-    // @param {Live NodeList} allInputs
-    //
-    // @usage
-    // this.removeDynamicElement(targetEl, allInputs);
-    //
-    // [1] Deconstruct the length from allInputs
-    // [2] If the length is zero theres nothing to remove
-    // [3] Remove the last child from allInputs
-    // [4] Call toggleDynamicRemoveButton();
-    //     # Disables the remove button if required.
-    //
-    removeDynamicElement(targetEl, allInputs) {
-        const { length } = allInputs; // [1]
-
-        if (length === 0) return; // [2]
-        allInputs[length - 1].parentElement.removeChild(allInputs[length - 1]); // [3]
-        this.toggleDynamicRemoveButton(targetEl, allInputs.length, this.ACTION_ADD); // [4]
-
-        return this;
-    };
-
-    //
     // Add content block buttons
     // Adds content block creation to the bottom of the form
     // These buttons are used to add content blocks to the form
@@ -645,29 +531,6 @@ export default class FormConnect {
                     .prependTo(buttonEl);
             };
         };
-    };
-
-    //
-    // Remove content block
-    // Removes a content block from the DOM
-    //
-    // @param {HTMLElement} targetEl
-    //
-    // @usage
-    // this.removeContentBlock(targetEl);
-    //
-    // [1] If targetEl is falsy return.
-    // [2] Remove targetEl from the DOM.
-    // [3] Update the indexes in the siblings that are left
-    // [4] If dragging is not allowed disable it.
-    //     # Dragging will be disabled if there's less than 2 content blocks in the DOM.
-    //
-    removeContentBlock(targetEl) {
-        if (!targetEl) return; // [1]
-        targetEl.remove(); // [2]
-
-        DomDataUtils.updateWrapperIndexes(this.contentBlocksLNL);
-        if (!this.dragDrop.isDragAllowed()) this.dragDrop.disableDrag();
     };
 
     //
@@ -741,30 +604,23 @@ export default class FormConnect {
 
         switch (targetEl.classList) { // [5]
             case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:addDynamic')]): // [6]
-                this.addDynamicElement(targetEl, elType, allInputs);
+                FormGroup.addDynamicElement(targetEl, elType, allInputs, {
+                    'block:single': this.getClassNameFor('block:single'),
+                    'form:group': this.getClassNameFor('form:group'),
+                    'form:control': this.getClassNamesFor('form:control')
+                });
                 break;
 
             case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:removeDynamic')]): // [7]
-                this.removeDynamicElement(targetEl, allInputs);
+                FormGroup.removeDynamicElement(targetEl, allInputs);
                 break;
 
             case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:addBlock')]): // [8]
-                const contentBlock = new ContentBlock(
-                    this.contentBlocksLNL.length,
-                    this.contentBlocksParentEl,
-                    this.options,
-                    this.dragDrop
-                );
-                contentBlock.addContentBlock(
-                    targetEl.dataset.group,
-                    this.contentGroups[targetEl.dataset.group],
-                );
-
-                // this.addContentBlock(targetEl.dataset.group); // data-group
+                this.contentBlock.add(targetEl.dataset.group, this.contentGroups[targetEl.dataset.group]);
                 break;
 
             case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:removeBlock')]): // [9]
-                this.removeContentBlock(targetEl.parentElement);
+                this.contentBlock.remove(targetEl.parentElement, this.contentBlocksLNL);
                 break;
 
             case DomClassUtils.targetHasClass(targetEl, [this.getClassNameFor('button:tab')]):
