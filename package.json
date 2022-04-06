@@ -7,14 +7,16 @@
         "compilejs:dev": "webpack",
         "compilejs:prod": "webpack --config webpack.config.prod.js",
         "compilecss:dev": "gulp compileSassDev",
-        "compilecss:prod": "gulp compileSass"
+        "compilecss:prod": "gulp compileSass",
+        "test": "jest"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@babel/core": "^7.17.8",
+        "@babel/core": "^7.17.9",
         "@babel/preset-env": "^7.16.11",
+        "babel-jest": "^27.5.1",
         "babel-loader": "^8.2.3",
         "clean-webpack-plugin": "^4.0.0",
         "core-js": "^3.21.1",
