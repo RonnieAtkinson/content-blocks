@@ -45,7 +45,7 @@ export default class CheckValue {
     //     - Performs type coercion, checking for both null and undefined
     //     - See: http://webreflection.blogspot.com/2010/10/javascript-coercion-demystified.html
     //
-    static isNullUndefindedEmpty(value) {
+    static isNullUndefinedEmpty(value) {
         return value == null || value === ''; // [1]
     };
 };

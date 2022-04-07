@@ -109,11 +109,11 @@ export default class DomElement {
         if (typeof params != 'object') throw new Error('Attributes need to be passed as an object, eg: { name: \'foo\', id: \'bar\' }'); // [2]
 
         for (const attribute in params) { // [3]
-            if (CheckValue.isNullUndefindedEmpty(params[attribute])) continue; // [4]
+            if (CheckValue.isNullUndefinedEmpty(params[attribute])) continue; // [4]
 
             if (typeof params[attribute] == 'object') { // [5]
                 for (const value in params[attribute]) { // [6]
-                    if (CheckValue.isNullUndefindedEmpty(params[attribute][value])) continue; // [7]
+                    if (CheckValue.isNullUndefinedEmpty(params[attribute][value])) continue; // [7]
 
                     if (attribute === 'classList') { // [8]
                         this.el[attribute].add(params[attribute][value]); // [9]

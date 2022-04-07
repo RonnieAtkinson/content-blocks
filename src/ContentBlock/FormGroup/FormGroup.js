@@ -170,7 +170,7 @@ export default class FormGroup {
         const tabName = formGroup.tab;
         const parentEl = (Object.keys(this.parentNodes).length > 0) ? this.parentNodes[tabName] : this.parentNodes;
 
-        if (CheckValue.isNullUndefindedEmpty(parentEl)) throw new Error(`${formGroup.label} has been assigned to a tab that hasn't been defined`);
+        if (CheckValue.isNullUndefinedEmpty(parentEl)) throw new Error(`${formGroup.label} has been assigned to a tab that hasn't been defined`);
 
         const hasNode = !!((formGroup.element || {}).node); // [3]
         const hasVariations = groupName === 'variation' && !!(Object.keys(this.variations || {}).length) && hasNode; // [4]
