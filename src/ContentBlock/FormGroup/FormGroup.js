@@ -30,7 +30,7 @@ export default class FormGroup {
     //
     // @constructs FormGroup
     //
-    // @param {object || HTMLElement} parentNodes
+    // @param {object | HTMLElement} parentNodes
     // @param {object} variations
     // @param {number} index
     // @param {object} options
