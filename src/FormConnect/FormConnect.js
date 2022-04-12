@@ -69,7 +69,7 @@ const defaultClasses = {
 //
 // Default text
 //
-// These are the defaults for text content
+// These are the defaults for text content attributes
 // Can be overwritten when initilizing a new FormConnect instance using the options param
 //
 // Overwriting using the options param:
@@ -153,7 +153,6 @@ export const defaultFormGroups = {
 //
 // This object holds the default content blocks
 // 
-//
 const defaultContentBlocks = {
     intro: {
         display: 'Introduction',
@@ -342,51 +341,71 @@ const defaultContentBlocks = {
 //
 // Form connect class
 //
-// @param {HTMLElement} formEl
-// @param {object} contentGroups
-// @param {object} options
-//
-// @throws
-// Will throw an error if formEl parameter is falsy of its not a form node.
-// Will throw an error if contentGroups is falsy or its not an object.
+// @usage
+// new FormConnect(formEl);
 //
 // @usage
-// new FormConnect(formEl, contentGroups);
+// contentBlocks is optional
+// new FormConnect(formEl, contentBlocks);
 //
 // @usage
 // options is optional
-// new FormConnect(formEl, contentGroups, options);
+// new FormConnect(formEl, contentBlocks, options);
 //
 export default class FormConnect {
 
     //
     // Class constructor
     //
-    // @constructs FormControl
+    // @constructs FormConnect
+    //
+    // @param {HTMLElement} formEl
+    // @param {object} contentBlocks
+    // @param {object} options
+    //
+    // @throws
+    // Will throw an error if formEl parameter is falsy or its not a form node.
+    // Will throw an error if contentBlocks is not an object.
     //
     // [1] If formEl is falsy or its not a form node throw an error.
     // [2] If contentGroups is falsy or its not an object throw an error.
     // [3] Set the formEl parameter to a class field.
-    // [4] Set the contentGroups to a class field.
-    // [5] Define a new options class field.
-    // [6] Nest a classes object.
-    // [7] Inlcude all the default classes.
-    // [8] Include all the classes from the options parameter.
-    //     # Duplicate key value pairs from the options param will overwrite anything set from default classes.
-    //     # Allowing you to set custom classes when instantiating.
-    // 
-    // [9] Set the content blocks wrapper element to a class field as an HTMLElement.
-    // [10] Set the content blocks parent element to a class field as an HTMLElement.
-    // [11] Set the content blocks button wrapper element to a class field as an HTMLElement.
-    // [12] Set the toggle drag element to a classfield as an HTMLElement.
-    // [13] Set the individial content blocks to a class field as a live node list. 
-    // [14] Set the initial drag state from the options.
-    //      # Default is false.
-    // [15] Call the render method on initialization.
+    // [4] Define a new contentGroups class field object.
+    //     # Spread the default content blocks defined in this file.
+    //     # Spread any user defined content blocks defined when instantiating.
+    //
+    // [5] Define a new options class field object.
+    //     # Spread the default options defined in this file.
+    //     # Spread any user defined options (defined when instantiating).
+    //       - If none are defined use an empty object instead so the spread is still iterable. 
+    //     # Duplicate keys from the user defined options will overwrite anything set from default options.
+    //     # Allowing you to set custom options when instantiating.
+    //
+    //     Define a nested 'text' object: options.text
+    //     Define a nested 'classes' object: options.classes
+    //     Define a nested 'exclude' object: options.exclude
+    //
+    //     Define a 'defaultBlocks' key: options.exclude.defaultBlocks
+    //     # The value of this key is an array of strings.
+    //     # Used to delete keys from the defaultContentBlocks defined in this file.
+    //     # see this.excludeDefaultBlocks();
+    //     # Set the value to a user defined array (defined when instantiating)
+    //       - If nothing is defined use an empty array instead 
+    //       - When defining this array the strings need to match the default content block keys. eg ['intro', 'link']
+    //
+    // [6] If any default blocks need excluding call this.excludeDefaultBlocks();
+    //
+    // [7] Set the content blocks wrapper element to a class field as an HTMLElement.
+    // [8] Set the content blocks parent element to a class field as an HTMLElement.
+    // [9] Set the content blocks button wrapper element to a class field as an HTMLElement.
+    // [10] Set the individial content blocks to a class field as a live node list. 
+    // [11] Create a new DragDrop instance.
+    // [12] Create a new ContentBlock instance.
+    // [13] Call the render method.
     //
     constructor(formEl, contentBlocks = {}, options = {}) {
         if (!formEl || formEl.nodeName != 'FORM') throw new Error('A valid form node is required to connect a form'); // [1]
-        if (!contentBlocks || typeof contentBlocks != 'object') throw new Error(`Content groups must be passed as an object. Currently ${typeof contentGroups}`); // [2]
+        if (typeof contentBlocks != 'object') throw new Error(`Content groups must be passed as an object. Currently ${typeof contentGroups}`); // [2]
 
         this.formEl = formEl; // [3]
         this.contentGroups = { // [4]
@@ -412,29 +431,30 @@ export default class FormConnect {
 
         if (this.options.exclude.defaultBlocks.length > 0) this.excludeDefaultBlocks(); // [6]
 
-        this.contentBlocksWrapperEl = this.formEl.querySelector(`.${this.getClassNameFor('block:wrapper')}`); // [9]
-        this.contentBlocksParentEl = this.contentBlocksWrapperEl.querySelector(`.${this.getClassNameFor('block:parent')}`); // [10]
-        this.contentBlocksButtonWrapperEl = this.contentBlocksWrapperEl.querySelector(`.${this.getClassNameFor('button:wrapper')}`); // [11]
-        this.contentBlocksLNL = this.contentBlocksParentEl.getElementsByClassName(this.getClassNameFor('block:single')); // [13]
+        this.contentBlocksWrapperEl = this.formEl.querySelector(`.${this.getClassNameFor('block:wrapper')}`); // [7]
+        this.contentBlocksParentEl = this.contentBlocksWrapperEl.querySelector(`.${this.getClassNameFor('block:parent')}`); // [8]
+        this.contentBlocksButtonWrapperEl = this.contentBlocksWrapperEl.querySelector(`.${this.getClassNameFor('button:wrapper')}`); // [9]
+        this.contentBlocksLNL = this.contentBlocksParentEl.getElementsByClassName(this.getClassNameFor('block:single')); // [10]
 
-        this.dragDrop = new DragDrop(
+        this.dragDrop = new DragDrop( // [11]
             this.contentBlocksParentEl,
             this.contentBlocksLNL,
             this.options
-        ); // NEW
+        );
 
-        this.contentBlock = new ContentBlock(
+        this.contentBlock = new ContentBlock( // [12]
             this.contentBlocksLNL.length,
             this.contentBlocksParentEl,
             this.options,
             this.dragDrop
         );
 
-        this.render(); // [15]
+        this.render(); // [13]
     };
 
     //
-    // Exclude default content block
+    // Exclude default blocks
+    //
     // Deletes keys from the default content blocks
     // Deleted keys are defined in the options param when instantiating:
     // eg: exclude: { defaultBlocks: ['link'] }
@@ -463,10 +483,8 @@ export default class FormConnect {
     // this.getClassNameFor('block:wrapper');
     // Returns 'content-blocks-wrapper'
     //
-    // [1] Return this first item in this.getClassNamesFor.
-    //
     getClassNameFor(name) {
-        return OptionUtils.getClassNamesFor(name, this.options.classes)[0]; // [1]
+        return OptionUtils.getClassNamesFor(name, this.options.classes)[0];
     };
 
     //
@@ -483,45 +501,55 @@ export default class FormConnect {
     // this.getClassNamesFor('block:wrapper');
     // Returns ['content-blocks-wrapper']
     //
-    // [1]
-    //
     getClassNamesFor(name) {
         return OptionUtils.getClassNamesFor(name, this.options.classes);
     };
 
     //
     // Add content block buttons
-    // Adds content block creation to the bottom of the form
+    // Adds content block creation buttons
     // These buttons are used to add content blocks to the form
     //
     // @usage
     // this.addContentButtons();
     //
     // [1] For each content block type in this.contentGroups:
-    // [2] Create a new button element.
-    // [3] Set the type to 'button' so they dont submit the form.
-    // [4] Set the textContent to a value from the object.
-    // [5] Set the class list from this.options.
-    //     # class will either be from the default classes.
-    //     # or user defined on init.
-    // [6] set the data-group to the group const
-    //     # result will look something like data-group="heading"
-    // [7] Append to the button wrapper
+    // [2] Destruct icon and display values
+    // [3] Create a new button element.
+    //     # Set the type to 'button' so they dont submit the form.
+    //     # Set the textContent to the destructed display value.
+    //     # Set the class list from this.options.
+    //     # Add a modifier class for the group type
+    //     # Set the data-group attribute to the group name
+    //     # Append to the button wrapper
+    //     # result will look something like:
+    //     <button class="bt-add-group bt-add-group--heading" type="button" data-group="heading">display</button>
     //
+    // [4] If an icon value was destructed from the contentGroup:
+    // [5] Create a new i element
+    //     # Set the class list
+    //     # Add a modifier class for the icon name
+    //     # Prepend to the button element
+    //     # Result will look something like:
+    //     <i class="icon icon-intro"></i>
+    // 
     addContentButtons() {
         for (const group in this.contentGroups) { // [1]
-            const { icon, display } = this.contentGroups[group];
-            const { el: buttonEl } = new DomElement('button')
-                .addAttributes({ // [2]
-                    type: 'button', // [3]
-                    textContent: display, // [4]
-                    classList: [...this.getClassNamesFor('button:addBlock'), `${this.getClassNameFor('button:addBlock')}--${group}`], // [5]
-                    dataset: { group } // [6]
-                })
-                .appendTo(this.contentBlocksButtonWrapperEl); // [7]
+            const { icon, display } = this.contentGroups[group]; // [2]
 
-            if (icon) {
-                new DomElement('i')
+            // Create a new button element
+            const { el: buttonEl } = new DomElement('button') // [3]
+                .addAttributes({
+                    type: 'button',
+                    textContent: display,
+                    classList: [...this.getClassNamesFor('button:addBlock'), `${this.getClassNameFor('button:addBlock')}--${group}`],
+                    dataset: { group }
+                })
+                .appendTo(this.contentBlocksButtonWrapperEl);
+
+            // Add an icon if one was defined.
+            if (icon) { // [4]
+                new DomElement('i') // [5]
                     .addAttributes({
                         classList: [
                             ...this.getClassNamesFor('block:icon'),
@@ -531,31 +559,60 @@ export default class FormConnect {
                     .prependTo(buttonEl);
             };
         };
+
+        return this;
     };
 
     //
     // Switch to tab
+    // Makes the target tab active
+    // Makes all other tabs inactive
     //
-    // @todo comments
+    // @param {HTMLElement} targetEl
+    //
+    // @usage
+    // this.switchToTab(targetEl);
+    //
+    // [1] Get content block we're tabbing within.
+    // [2] Get the button wrapper.
+    // [3] Get the target tab from the dataset on the button.
+    //     # data-target
+    //
+    // Update all the buttons:
+    // [4] Get a node list of all the buttons that are children of the button wrapper.
+    // [5] For all the buttons in the node list:
+    //     # Remove the active class.
+    //     # Set the disabled attribute to false.
+    // 
+    // Update the target button:
+    // [6] Add the active class to the target button.
+    // [7] Set the disabled attribute to true.
+    //
+    // Update content tabs:
+    // [8] Remove the active class from all content tabs.
+    // [9] Add the active class to the tab we want to show.
     //
     switchToTab(targetEl) {
-        const parentContentBlock = targetEl.closest(`.${this.getClassNameFor('block:single')}`);
-        const buttonWrapper = targetEl.parentElement;
-        const targetTab = targetEl.dataset.target;
+        const parentContentBlock = targetEl.closest(`.${this.getClassNameFor('block:single')}`); // [1]
+        const buttonWrapper = targetEl.parentElement; // [2]
+        const targetTab = targetEl.dataset.target; // [3]
 
-        // Update classes on the buttons
-        const allButtons = buttonWrapper.querySelectorAll('button')
-        for (const bt of allButtons) {
+        // Update ALL the buttons
+        const allButtons = buttonWrapper.querySelectorAll('button'); // [4]
+        for (const bt of allButtons) { // [5]
             bt.classList.remove(...this.getClassNamesFor('button:tab:active'));
             bt.disabled = false;
         };
 
-        targetEl.classList.add(...this.getClassNamesFor('button:tab:active'));
-        targetEl.disabled = true;
+        // Update the target button
+        targetEl.classList.add(...this.getClassNamesFor('button:tab:active')); // [6]
+        targetEl.disabled = true; // [7]
 
         // Update classes on the content tabs
-        DomClassUtils.removeClassFromChildren(parentContentBlock, this.getClassNameFor('block:tab'), this.getClassNameFor('block:tab:active'));
-        parentContentBlock.querySelector(`.${targetTab}`).classList.add(this.getClassNameFor('block:tab:active'));
+        DomClassUtils.removeClassFromChildren(parentContentBlock, this.getClassNameFor('block:tab'), this.getClassNameFor('block:tab:active')); // [8]
+        parentContentBlock.querySelector(`.${targetTab}`).classList.add(this.getClassNameFor('block:tab:active')); // [9]
+
+        return this;
     };
 
     //
@@ -565,30 +622,36 @@ export default class FormConnect {
     // @param {DOM click event} event
     //
     // @throws
-    // Throws an error if theres no data-el on the ancestor of a dynamic add button
+    // Throws an error if theres no data-el on the form group of a dynamic button.
     //
     // @usage
     // this.handleFormClicks();
     //
-    // [1] Set targetEl to event.target.
-    // [2] Make sure the button type is 'button' and not anything else like 'submit'
-    // [3] Define some variables that we can access from parent scopes
-    // [4] If targetEl is a dynamic add or remove button:
+    // [1] Get the event target.
+    // [2] Make sure the event target is a button and the type attribute is 'button' and not anything else like 'submit'.
+    //     # If the event target is not a button, return we dont want to do anything.
+    // [3] Define some variables that we can access from block scopes.
+    //
+    // [4] If the event target is a dynamic add or remove button:
+    //     # We need some more information before continuing:
+    //       - A list of all the input fields the button controls
+    //       - The type of input field the button controls
+    //
     //     # Set elType to the value of data-el on the ancestor form:group.
     //     # If theres no data-el on the ancestor throw an error.
-    //     # Set allInputs to a live node list of siblings of targetEl that are the same type set in data-el
+    //     # Set allInputs to a live node list of event target siblings that are the same type set in data-el above.
     //
-    // [5] Switch board for the class list of targetEl
+    // [5] Switch board for the event target classlist
     // [6] If the click target is a dynamic add button
-    //     # Add a dynamic element/
+    //     # Add a dynamic element
     // [7] If the click target is a dynamic remove button
     //     # Remove an element
     // [8] If the click target is an add block button
     //     # Add a block
     // [9] If the click target is a remove block button
     //     # Remove a block
-    // [10] If the click target is the toggle drag button
-    //     # Guessed it... Call the drag toggle handler
+    // [10] If the click target is a tab button
+    //     # Switch to that tab
     //
     handleFormClicks(event) {
         const targetEl = event.target; // [1]
@@ -596,12 +659,14 @@ export default class FormConnect {
 
         let allInputs, elType; // [3]
 
+        // If the target is a dynamic add or remove button
         if (DomClassUtils.targetHasClass(targetEl, [this.getClassNameFor('button:addDynamic'), this.getClassNameFor('button:removeDynamic')])) { // [4]
             elType = targetEl.closest(`.${this.getClassNameFor('form:group')}`).dataset.el;
             if (!elType) throw new Error('No data-el on the parent element');
             allInputs = targetEl.parentElement.getElementsByTagName(elType);
         };
 
+        // Switch board for the event target classlist
         switch (targetEl.classList) { // [5]
             case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:addDynamic')]): // [6]
                 FormGroup.addDynamicElement(targetEl, elType, allInputs, {
@@ -623,7 +688,7 @@ export default class FormConnect {
                 this.contentBlock.remove(targetEl.parentElement, this.contentBlocksLNL);
                 break;
 
-            case DomClassUtils.targetHasClass(targetEl, [this.getClassNameFor('button:tab')]):
+            case DomClassUtils.targetHasClass(targetEl, [this.getClassNameFor('button:tab')]): // [10]
                 this.switchToTab(targetEl);
                 break;
         };
@@ -634,7 +699,6 @@ export default class FormConnect {
     //
     // Form listener
     // Form buttons use event delegation so lets add a listener to the content blocks wrapper for the click.
-    // And to the content blocks parent element for dragging.
     //
     // @usage
     // this.formListener();
