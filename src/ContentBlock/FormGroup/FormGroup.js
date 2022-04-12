@@ -267,7 +267,7 @@ export default class FormGroup {
     // [5] Set the disabled attribute of targetEl
     //
     static toggleDynamicRemoveButton(targetEl, inputLength, action) {
-        if (!targetEl || CheckValue.isNullUndefindedEmpty(inputLength)) throw new Error('To toggle the remove button a required parameter is missing'); // [1]
+        if (!targetEl || CheckValue.isNullUndefinedEmpty(inputLength)) throw new Error('To toggle the remove button a required parameter is missing'); // [1]
         if (![ACTION_ADD, ACTION_REMOVE].includes(action)) throw new Error(`To toggle the remove button the action parmeter needs to be \'add\' or \'remove\'. ${action} was provided.`); // [2]
         const shouldDisable = inputLength === 0; // [3]
         if ((action === ACTION_ADD && inputLength > 1) || (action === ACTION_REMOVE && !shouldDisable)) return; // [4]
