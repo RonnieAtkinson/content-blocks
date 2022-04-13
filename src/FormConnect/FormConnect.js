@@ -407,6 +407,7 @@ export default class FormConnect {
         if (!formEl || formEl.nodeName != 'FORM') throw new Error('A valid form node is required to connect a form'); // [1]
         if (typeof contentBlocks != 'object') throw new Error(`Content groups must be passed as an object. Currently ${typeof contentGroups}`); // [2]
 
+        // Class fields
         this.formEl = formEl; // [3]
         this.contentGroups = { // [4]
             ...defaultContentBlocks,
@@ -429,19 +430,23 @@ export default class FormConnect {
             }
         };
 
+        // Exclude default content blocks if defined
         if (this.options.exclude.defaultBlocks.length > 0) this.excludeDefaultBlocks(); // [6]
 
+        // DOM references
         this.contentBlocksWrapperEl = this.formEl.querySelector(`.${this.getClassNameFor('block:wrapper')}`); // [7]
         this.contentBlocksParentEl = this.contentBlocksWrapperEl.querySelector(`.${this.getClassNameFor('block:parent')}`); // [8]
         this.contentBlocksButtonWrapperEl = this.contentBlocksWrapperEl.querySelector(`.${this.getClassNameFor('button:wrapper')}`); // [9]
         this.contentBlocksLNL = this.contentBlocksParentEl.getElementsByClassName(this.getClassNameFor('block:single')); // [10]
 
+        // Create a new DragDrop instance
         this.dragDrop = new DragDrop( // [11]
             this.contentBlocksParentEl,
             this.contentBlocksLNL,
             this.options
         );
 
+        // Create a new ContentBlock instance
         this.contentBlock = new ContentBlock( // [12]
             this.contentBlocksLNL.length,
             this.contentBlocksParentEl,
@@ -547,7 +552,7 @@ export default class FormConnect {
                 })
                 .appendTo(this.contentBlocksButtonWrapperEl);
 
-            // Add an icon if one was defined.
+            // Add an icon if one was defined
             if (icon) { // [4]
                 new DomElement('i') // [5]
                     .addAttributes({
@@ -715,8 +720,8 @@ export default class FormConnect {
     // @usage
     // this.render();
     //
-    // [1] Add buttons to the form that allow users to add new content blocks.
-    // [2] Call the form listener, listening for clicks and drags.
+    // [1] Add buttons to the form so users can add new content blocks.
+    // [2] Call the form listener, listening for clicks.
     //
     render() {
         this.addContentButtons(); // [1]

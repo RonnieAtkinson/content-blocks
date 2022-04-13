@@ -18,6 +18,8 @@ export default class DomDataUtils {
     // Updates the data-index on content group fieldsets
     // Updates the child postContent names
     //
+    // @param {live node list} nodeList
+    //
     // @usage
     // this.updateWrapperIndexes();
     //

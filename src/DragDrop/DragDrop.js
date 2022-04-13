@@ -13,16 +13,29 @@ import OptionUtils from '../utils/Option';
 // Default options
 //
 const defaultOptions = {
-    initialDragState: false,
+    initialDragState: false
 };
 
 //
 // Drag drop class
 //
+// @usage
+// new DragDrop(parentEl, blocks, options);
+//
 export default class DragDrop {
 
     //
     // Constructor
+    //
+    // @constructs DragDrop
+    //
+    // @param {HTMLElement} parentEl
+    // @param {live node list} blocks
+    // @param {object} options
+    //
+    // [1] Set the initial drag state
+    // [2] 
+    // [3] 
     //
     constructor(parentEl, blocks, options = {}) {
         this.contentBlocksParentEl = parentEl;
@@ -32,9 +45,9 @@ export default class DragDrop {
             ...options
         };
 
-        this.dragState = this.options.initialDragState; // [14]
-        this.toggleDragEl = this.contentBlocksParentEl.querySelector(`.${this.getClassNameFor('button:toggleDrag')}`); // [12]
-        this.dragListeners();
+        this.dragState = this.options.initialDragState; // [1]
+        this.toggleDragEl = this.contentBlocksParentEl.querySelector(`.${this.getClassNameFor('button:toggleDrag')}`); // [2]
+        this.dragListeners(); // [3]
     };
 
     //
@@ -54,8 +67,7 @@ export default class DragDrop {
     // [1] Return this first item in this.getClassNamesFor.
     //
     getClassNameFor(name) {
-        // return this.getClassNamesFor(name)[0]; // [1]
-        return OptionUtils.getClassNamesFor(name, this.options.classes)[0];
+        return OptionUtils.getClassNamesFor(name, this.options.classes)[0]; // [1]
     };
 
     //
@@ -75,7 +87,7 @@ export default class DragDrop {
     // [1]
     //
     getClassNamesFor(name) {
-        return OptionUtils.getClassNamesFor(name, this.options.classes);
+        return OptionUtils.getClassNamesFor(name, this.options.classes); // [1]
     };
 
     //
@@ -100,12 +112,12 @@ export default class DragDrop {
     // this.disableDrag();
     //
     // [1] Set the dragState field to false.
-    //     Any blocks added in the future will set their draggable attribute from this field.
+    //     # Any blocks added in the future will get/set their draggable attribute from this field.
     // [2] Disable the drag toggle button
     // [3] Uncheck the drag toggle
     // [4] Remove the active class from the drag toggle button
     // [5] For each content block in the content block live node list: 
-    //     # Set their draggable attribute to false.
+    //     # Set it's draggable attribute to false.
     //
     disableDrag() {
         this.dragState = false; // [1]
@@ -220,7 +232,7 @@ export default class DragDrop {
     // [2] If targetEl is falsy return.
     // [3] If the first item in dataTransfer types is 'text/html'
     //     # Add the drag:droppable class to the targetEl
-    // [5] Call preventDefault() to prevent additional event processing for this event
+    // [4] Call preventDefault() to prevent additional event processing for this event
     //     # Such as touch events or pointer events
     //
     handleDragEnter(event) {
@@ -228,7 +240,7 @@ export default class DragDrop {
         if (!targetEl) return; // [2]
         if (event.dataTransfer.types[0] === 'text/plain') { // [3]
             targetEl.classList.add(this.getClassNameFor('drag:droppable'));
-            event.preventDefault(); // [5]
+            event.preventDefault(); // [4]
         };
     };
 
@@ -313,6 +325,9 @@ export default class DragDrop {
 
     //
     // Drag listeners
+    //
+    // @usage
+    // this.dragListeners();
     //
     dragListeners() {
         this.contentBlocksParentEl.addEventListener('dragstart', this.handleDragStart.bind(this));

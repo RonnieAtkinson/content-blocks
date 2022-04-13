@@ -10,6 +10,7 @@ export default class OptionUtils {
     // @returns {string[]}
     //
     // @param {string} name
+    // @param {object} classOptions
     //
     // @usage
     // this.getClassNamesFor(name);
@@ -18,10 +19,11 @@ export default class OptionUtils {
     // this.getClassNamesFor('block:wrapper');
     // Returns ['content-blocks-wrapper']
     //
-    // [1]
-    // [2]
-    // [3]
-    // [4]
+    // [1] Get the class names from the object.
+    // [2] If class names are already an array return it.
+    // [3] If the class names are a string this means theres only one
+    //     # Add it to an array and return it.
+    // [4] If class names is neither an array or a string just return an empty array
     //
     static getClassNamesFor(name, classOptions) {
         const classNames = classOptions[name]; // [1]
