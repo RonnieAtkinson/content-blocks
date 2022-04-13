@@ -335,6 +335,41 @@ const defaultContentBlocks = {
                 ...defaultFormGroups.classes
             }
         }
+    },
+    list: {
+        display: 'List',
+        icon: 'list',
+        tabs: {
+            content: { display: 'Content', active: true },
+            classes: { display: 'Classes' }
+        },
+        variations: {
+            unordered: { display: 'Unordered' },
+            ordered: { display: 'Ordered' }
+        },
+        formGroups: {
+            variation: {
+                ...defaultFormGroups.inputSelect,
+                tab: 'content',
+                label: 'List type'
+            },
+            list: {
+                tab: 'content',
+                label: 'List items',
+                dynamic: true,
+                attributes: {
+                    data: {
+                        el: 'input',
+                        type: 'text',
+                        name: 'list',
+                        placeholder: 'List item'
+                    }
+                }
+            },
+            classes: {
+                ...defaultFormGroups.classes
+            }
+        }
     }
 };
 
