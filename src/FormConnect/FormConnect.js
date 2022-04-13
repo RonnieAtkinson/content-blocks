@@ -722,10 +722,12 @@ export default class FormConnect {
 
             case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:addBlock')]): // [8]
                 this.contentBlock.add(targetEl.dataset.group, this.contentGroups[targetEl.dataset.group]);
+                this.contentBlock.index++;
                 break;
 
             case DomClassUtils.targetHasClass(targetEl, [...this.getClassNamesFor('button:removeBlock')]): // [9]
                 this.contentBlock.remove(targetEl.parentElement, this.contentBlocksLNL);
+                this.contentBlock.index--;
                 break;
 
             case DomClassUtils.targetHasClass(targetEl, [this.getClassNameFor('button:tab')]): // [10]
