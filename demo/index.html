@@ -15,18 +15,14 @@
                 static init() {
                     const formEl = document.querySelector('form');
                     const customBlocks = {
-                        list: {
-                            display: 'List',
-                            icon: 'list',
-                            // tabs: {
-                            //     content: { display: 'Content', active: true }
-                            // },
+                        option: {
+                            display: 'Option',
+                            icon: 'option',
                             formGroups: {
                                 content: {
                                     attributes: {
                                         classList: ['form-check'],
                                     },
-                                    // tab: 'content',
                                     label: 'Check me',
                                     element: {
                                         node: 'input',

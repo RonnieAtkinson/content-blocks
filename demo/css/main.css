@@ -109,11 +109,11 @@ textarea {
   margin-bottom: 1rem;
 }
 
-.form-group--classes .form-control, .form-group--paragraph .form-control {
+.form-group--classes .form-control, .form-group--paragraph .form-control, .form-group--list .form-control {
   margin-bottom: 5px;
 }
 
-.form-group--classes .form-control:last-of-type, .form-group--paragraph .form-control:last-of-type {
+.form-group--classes .form-control:last-of-type, .form-group--paragraph .form-control:last-of-type, .form-group--list .form-control:last-of-type {
   margin-bottom: 1rem;
 }
 
@@ -456,4 +456,8 @@ textarea {
 
 .icon--list {
   background-image: url("../images/icons8-list-48.png");
+}
+
+.icon--option {
+  background-image: url("../images/icons8-check-circle-48.png");
 }
