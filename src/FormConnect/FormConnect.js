@@ -688,8 +688,10 @@ export default class FormConnect {
     //     # Remove an element
     // [8] If the click target is an add block button
     //     # Add a block
+    //     # Increment the index
     // [9] If the click target is a remove block button
     //     # Remove a block
+    //     # Reduce the index
     // [10] If the click target is a tab button
     //     # Switch to that tab
     //
