@@ -1,0 +1,60 @@
+html {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  font-family: Arial, Sans-serif, Arial, Sans-serif;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/Poppins-Regular.eot?#iefix");
+  src: url("../fonts/Poppins-Regular.eot?#iefix") format("eot"), url("../fonts/Poppins-Regular.woff2") format("woff2"), url("../fonts/Poppins-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: url("../fonts/RobotoMono-Bold.eot?#iefix");
+  src: url("../fonts/RobotoMono-Bold.eot?#iefix") format("eot"), url("../fonts/RobotoMono-Bold.woff2") format("woff2"), url("../fonts/RobotoMono-Bold.woff") format("woff");
+}
+
+*, *:before, *:after {
+  -moz-box-sizing: inherit;
+  -webkit-box-sizing: inherit;
+  box-sizing: inherit;
+}
+
+body {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  background: #161719;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.width-container {
+  margin: 0 16px;
+  max-width: 960px;
+}
+
+@media (min-width: 48.0625em) {
+  .width-container {
+    margin: 0 32px;
+  }
+}
+
+@media (min-width: 64em) {
+  .width-container {
+    margin: 0 auto;
+  }
+}
