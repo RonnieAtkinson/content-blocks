@@ -11,8 +11,8 @@ html {
     @if $include-font-face {
         @include font-face;
         font-family: $font-family-body, $font-family-fallback;
-    }
-}
+    };
+};
 
 * {
     &,
@@ -21,15 +21,15 @@ html {
         -moz-box-sizing: inherit;
         -webkit-box-sizing: inherit;
         box-sizing: inherit;
-    }
-}
+    };
+};
 
 body {
     color: $default-text-color;
     font-size: $base-font-size;
     font-weight: $font-weight-normal;
 
-    // background: $color-dark-01;
+    background: $color-dark-01;
 
     -moz-osx-font-smoothing: grayscale; // [2]
     -webkit-font-smoothing: antialiased; // [2]
@@ -45,9 +45,9 @@ body {
 
     @include mq($from: desktop) {
         margin: 0 $grid-gutter;
-    }
+    };
 
     @media (min-width: 64em) { //1024px
         margin: 0 auto;
-    }
-}
+    };
+};
