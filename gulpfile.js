@@ -4,7 +4,11 @@ const sass = require('gulp-sass')(require('node-sass'));
 
 // Settings
 const sassConfig = {
-    src: './demo/scss/main.scss',
+    src: [
+        './demo/scss/demo.scss',
+        './demo/scss/content-blocks.scss',
+        './demo/scss/form-fields.scss'
+    ],
     dest: './demo/css',
     output: {
         production: 'compressed',
